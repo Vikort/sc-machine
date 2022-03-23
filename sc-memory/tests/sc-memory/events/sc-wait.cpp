@@ -9,7 +9,6 @@
 
 namespace
 {
-
 // waiters threads
 struct WaitTestData
 {
@@ -38,7 +37,7 @@ void EmitEvent(WaitTestData & data)
   data.m_isDone = edge.IsValid();
 }
 
-}
+}  // namespace
 
 class ScWaitTest : public ScMemoryTest
 {
@@ -86,14 +85,11 @@ TEST_F(ScWaitTest, TimeOut)
 TEST_F(ScWaitTest, CondValid)
 {
   WaitTestData data(m_addr);
-  ScWaitCondition<ScEventAddInputEdge> waiter(*m_ctx, m_addr,
-      [](ScAddr const &, ScAddr const &, ScAddr const &)
-  {
+  ScWaitCondition<ScEventAddInputEdge> waiter(*m_ctx, m_addr, [](ScAddr const &, ScAddr const &, ScAddr const &) {
     return true;
   });
 
-  waiter.SetOnWaitStartDelegate([&data]()
-  {
+  waiter.SetOnWaitStartDelegate([&data]() {
     EmitEvent(data);
   });
 
@@ -105,9 +101,7 @@ TEST_F(ScWaitTest, CondValidFalse)
 {
   WaitTestData data(m_addr);
 
-  ScWaitCondition<ScEventAddInputEdge> waiter(*m_ctx, m_addr,
-    [](ScAddr const &, ScAddr const &, ScAddr const &)
-  {
+  ScWaitCondition<ScEventAddInputEdge> waiter(*m_ctx, m_addr, [](ScAddr const &, ScAddr const &, ScAddr const &) {
     return false;
   });
 

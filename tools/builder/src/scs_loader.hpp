@@ -7,7 +7,8 @@
 #include <keynodes.generated.hpp>
 #include "utils.hpp"
 
-class ScsLoader {
+class ScsLoader
+{
 public:
-    void loadScsFile(ScMemoryContext & context, const std::string & filename);
+  void loadScsFile(ScMemoryContext & context, const std::string & filename);
 };

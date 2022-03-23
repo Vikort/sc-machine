@@ -8,11 +8,12 @@
 
 namespace
 {
-
 class TestFileInterface : public SCsFileInterface
 {
 public:
-  ~TestFileInterface() override {}
+  ~TestFileInterface() override
+  {
+  }
 
   ScStreamPtr GetFileContent(std::string const & fileURL) override
   {
@@ -21,18 +22,17 @@ public:
   }
 };
 
-} // namespace
+}  // namespace
 
 using SCsHelperTest = ScMemoryTest;
 
 TEST_F(SCsHelperTest, GenerateBySCs)
 {
-  std::vector<std::pair<std::string, std::string>> tests =
-  {
-    { "x -> y;;", "x _-> _y;;" },
-    { "x1 => nrel_x1: [test_content*];;", "x1 _=> nrel_x1:: _[];;" },
-    { "x2 ~> y2 (* <- z2;; *);;", "x2 _~> _y2 (* _<- _z2;; *);;" },
-    { "x3 <- y3 (* <- sc_node_class;; *);;", "sc_node_class -> _y3;; _y3 _-> x3;;" },
+  std::vector<std::pair<std::string, std::string>> tests = {
+      {"x -> y;;", "x _-> _y;;"},
+      {"x1 => nrel_x1: [test_content*];;", "x1 _=> nrel_x1:: _[];;"},
+      {"x2 ~> y2 (* <- z2;; *);;", "x2 _~> _y2 (* _<- _z2;; *);;"},
+      {"x3 <- y3 (* <- sc_node_class;; *);;", "sc_node_class -> _y3;; _y3 _-> x3;;"},
   };
 
   for (auto const & t : tests)
@@ -97,19 +97,18 @@ TEST_F(SCsHelperTest, GenerateBySCs_Aliases)
 TEST_F(SCsHelperTest, GenerateBySCs_Contents)
 {
   std::string const dataString = "v_string -> [string];;";
-  std::string const dataFloat  = "v_float -> [^\"float:7\"];;";
+  std::string const dataFloat = "v_float -> [^\"float:7\"];;";
   std::string const dataDouble = "v_double -> [^\"double:8\"];;";
-  std::string const dataInt8   = "v_int8 -> [^\"int8:9\"];;";
-  std::string const dataInt16  = "v_int16 -> [^\"int16:10\"];;";
-  std::string const dataInt32  = "v_int32 -> [^\"int32:11\"];;";
-  std::string const dataInt64  = "v_int64 -> [^\"int64:12\"];;";
-  std::string const dataUint8  = "v_uint8 -> [^\"uint8:13\"];;";
+  std::string const dataInt8 = "v_int8 -> [^\"int8:9\"];;";
+  std::string const dataInt16 = "v_int16 -> [^\"int16:10\"];;";
+  std::string const dataInt32 = "v_int32 -> [^\"int32:11\"];;";
+  std::string const dataInt64 = "v_int64 -> [^\"int64:12\"];;";
+  std::string const dataUint8 = "v_uint8 -> [^\"uint8:13\"];;";
   std::string const dataUint16 = "v_uint16 -> [^\"uint16:14\"];;";
   std::string const dataUint32 = "v_uint32 -> [^\"uint32:15\"];;";
   std::string const dataUint64 = "v_uint64 -> [^\"uint64:16\"];;";
 
-  auto const testLink = [this](std::string const & data, std::string const & keynode)
-  {
+  auto const testLink = [this](std::string const & data, std::string const & keynode) {
     SCsHelper helper(*m_ctx, std::make_shared<TestFileInterface>());
     EXPECT_TRUE(helper.GenerateBySCsText(data));
 
@@ -238,7 +237,6 @@ TEST_F(SCsHelperTest, GenerateBySCs_Visibility_System)
     EXPECT_TRUE(m_ctx->HelperSearchTemplate(templ, res));
   }
 }
-
 
 TEST_F(SCsHelperTest, GenerateBySCs_Visibility_Global)
 {

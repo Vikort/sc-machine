@@ -52,7 +52,6 @@ TEST_F(ScIterator3Test, f_a_f)
   EXPECT_EQ(iter3->Get(2), m_target);
 }
 
-
 TEST_F(ScIterator3Test, f_a_a)
 {
   ScIterator3Ptr const iter3 = m_ctx->Iterator3(m_source, ScType::EdgeAccessConstPosPerm, ScType::Node);

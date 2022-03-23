@@ -12,7 +12,6 @@
 
 class GwfTranslator : public Translator
 {
-  
 protected:
   explicit GwfTranslator(class ScMemoryContext & context);
   virtual ~GwfTranslator() = default;

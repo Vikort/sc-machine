@@ -4,7 +4,6 @@
 
 #include "sc_test.hpp"
 
-
 TEST_F(ScMemoryTest, elements)
 {
   ScMemoryContext ctx(sc_access_lvl_make_min, "elements");

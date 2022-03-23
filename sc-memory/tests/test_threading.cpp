@@ -19,9 +19,8 @@ sc_memory_params params;
 
 namespace
 {
-typedef std::vector<GThread*> tGThreadVector;
+typedef std::vector<GThread *> tGThreadVector;
 }
-
 
 void print_storage_statistics()
 {
@@ -33,14 +32,19 @@ void print_storage_statistics()
   sc_uint32 arcs = stat.arc_count;
   sc_uint32 links = stat.link_count;
 
-  printf("--- Storage statistics: ---\n \tSegments: %u\n\tNodes: %u\n\tArcs: %u\n\tLinks: %u\n\tEmpty: %u\n---\n",
-         stat.segments_count, nodes, arcs, links, stat.empty_count);
+  printf(
+      "--- Storage statistics: ---\n \tSegments: %u\n\tNodes: %u\n\tArcs: %u\n\tLinks: %u\n\tEmpty: %u\n---\n",
+      stat.segments_count,
+      nodes,
+      arcs,
+      links,
+      stat.empty_count);
 }
 
 // simple test on node creation
 gpointer create_node_thread(gpointer data)
 {
-  sc_memory_context *ctx = sc_memory_context_new(sc_access_lvl_make(8, 8));
+  sc_memory_context * ctx = sc_memory_context_new(sc_access_lvl_make(8, 8));
   int count = GPOINTER_TO_INT(data);
   int result = count;
   for (int i = 0; i < count; ++i)
@@ -58,7 +62,7 @@ gpointer create_node_thread(gpointer data)
 // simple arc creation test
 gpointer create_arc_thread(gpointer data)
 {
-  sc_memory_context *ctx = sc_memory_context_new(sc_access_lvl_make(8, 8));
+  sc_memory_context * ctx = sc_memory_context_new(sc_access_lvl_make(8, 8));
   int count = GPOINTER_TO_INT(data);
   int result = count;
   for (int i = 0; i < count; ++i)
@@ -80,16 +84,16 @@ gpointer create_arc_thread(gpointer data)
   }
 
 result:
-  {
-    sc_memory_context_free(ctx);
-  }
+{
+  sc_memory_context_free(ctx);
+}
   return GINT_TO_POINTER(result);
 }
 
 // simple sc-links creation
 gpointer create_link_thread(gpointer data)
 {
-  sc_memory_context *ctx = sc_memory_context_new(sc_access_lvl_make(8, 8));
+  sc_memory_context * ctx = sc_memory_context_new(sc_access_lvl_make(8, 8));
   int count = GPOINTER_TO_INT(data);
   int result = count;
   for (int i = 0; i < count; ++i)
@@ -104,7 +108,6 @@ gpointer create_link_thread(gpointer data)
   return GINT_TO_POINTER(result);
 }
 
-
 // -----------------------------------------
 
 void test_creation(GThreadFunc f, sc_int32 count, sc_int32 thread_count)
@@ -115,7 +118,6 @@ void test_creation(GThreadFunc f, sc_int32 count, sc_int32 thread_count)
 
   tGThreadVector threads;
   threads.reserve(thread_count);
-
 
   print_storage_statistics();
 
@@ -177,7 +179,7 @@ void test_combined_creation()
   for (sc_int32 i = 0; i < thread_count; ++i)
   {
     GThreadFunc f = create_node_thread;
-    switch(g_random_int() % 3)
+    switch (g_random_int() % 3)
     {
     case 0:
       f = create_link_thread;
@@ -204,7 +206,6 @@ void test_combined_creation()
   sc_memory_shutdown(SC_FALSE);
 }
 
-
 gpointer start_save_threaded(gpointer data)
 {
   g_test_timer_start();
@@ -219,7 +220,7 @@ void test_save()
   // create nodes
   s_default_ctx = sc_memory_initialize(&params);
 
-  sc_memory_context *ctx = sc_memory_context_new(sc_access_lvl_make(8, 8));
+  sc_memory_context * ctx = sc_memory_context_new(sc_access_lvl_make(8, 8));
   int const count = 1000000;
   for (int i = 0; i < count; ++i)
   {
@@ -237,7 +238,7 @@ void test_save()
 }
 
 // ---------------------------
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
   sc_memory_params_clear(&params);
 
@@ -246,7 +247,12 @@ int main(int argc, char *argv[])
   params.config_file = "sc-memory.ini";
   params.ext_path = 0;
 
-  printf("sc_element: %zd, sc_addr: %zd, sc_arc: %zd, sc_content: %zd\n", sizeof(sc_element), sizeof(sc_addr), sizeof(sc_arc_info), sizeof(sc_content));
+  printf(
+      "sc_element: %zd, sc_addr: %zd, sc_arc: %zd, sc_content: %zd\n",
+      sizeof(sc_element),
+      sizeof(sc_addr),
+      sizeof(sc_arc_info),
+      sizeof(sc_content));
 
   g_test_init(&argc, &argv, NULL);
   g_test_add_func("/threading/create_save", test_save);
@@ -255,7 +261,6 @@ int main(int argc, char *argv[])
   g_test_add_func("/threading/create_links", test_link_creation);
   g_test_add_func("/threading/create_combined", test_combined_creation);
   g_test_run();
-
 
   return 0;
 }

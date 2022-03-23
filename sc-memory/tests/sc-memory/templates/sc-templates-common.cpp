@@ -44,28 +44,15 @@ TEST_F(ScTemplateCommonTest, smoke)
 
   ScTemplate templ;
 
-  templ.Triple(
-        addr1 >> "addr1",
-        ScType::EdgeAccessVarPosPerm >> "edge1",
-        ScType::NodeVar >> "addr2");
-  templ.Triple(
-        ScType::NodeVar >> "_addr1T2",
-        ScType::EdgeAccessVarPosPerm >> "_addr2T2",
-        "edge1");
-  templ.Triple(
-        "addr2",
-        ScType::EdgeDCommonVar >> "_addr2T3",
-        "edge1");
+  templ.Triple(addr1 >> "addr1", ScType::EdgeAccessVarPosPerm >> "edge1", ScType::NodeVar >> "addr2");
+  templ.Triple(ScType::NodeVar >> "_addr1T2", ScType::EdgeAccessVarPosPerm >> "_addr2T2", "edge1");
+  templ.Triple("addr2", ScType::EdgeDCommonVar >> "_addr2T3", "edge1");
 
   ScTemplateGenResult result;
   EXPECT_TRUE(m_ctx->HelperGenTemplate(templ, result));
 
   ScIterator5Ptr const it5 = m_ctx->Iterator5(
-        addr1,
-        ScType::EdgeAccessConstPosPerm,
-        ScType::Node,
-        ScType::EdgeAccessConstPosPerm,
-        ScType::Node);
+      addr1, ScType::EdgeAccessConstPosPerm, ScType::Node, ScType::EdgeAccessConstPosPerm, ScType::Node);
 
   EXPECT_TRUE(it5->Next());
   EXPECT_EQ(it5->Get(0), result["addr1"]);
@@ -74,16 +61,12 @@ TEST_F(ScTemplateCommonTest, smoke)
   EXPECT_EQ(it5->Get(3), result["_addr2T2"]);
   EXPECT_EQ(it5->Get(4), result["_addr1T2"]);
 
-  ScIterator3Ptr const it3 = m_ctx->Iterator3(
-        result["addr2"],
-        ScType::EdgeDCommon,
-        ScType::EdgeAccessConstPosPerm);
+  ScIterator3Ptr const it3 = m_ctx->Iterator3(result["addr2"], ScType::EdgeDCommon, ScType::EdgeAccessConstPosPerm);
 
   EXPECT_TRUE(it3->Next());
   EXPECT_EQ(it3->Get(0), result["addr2"]);
   EXPECT_EQ(it3->Get(1), result["_addr2T3"]);
   EXPECT_EQ(it3->Get(2), result["edge1"]);
-
 
   ScTemplateSearchResult searchResult;
   EXPECT_TRUE(m_ctx->HelperSearchTemplate(templ, searchResult));
@@ -123,9 +106,7 @@ TEST_F(ScTemplateCommonTest, search)
   }
 
   ScTemplate templ;
-  templ.Triple(addrSrc >> "addrSrc",
-               ScType::EdgeAccessVarPosPerm >> "edge",
-               ScType::NodeVar >> "addrTrg");
+  templ.Triple(addrSrc >> "addrSrc", ScType::EdgeAccessVarPosPerm >> "edge", ScType::NodeVar >> "addrTrg");
 
   ScTemplateSearchResult result;
   EXPECT_TRUE(m_ctx->HelperSearchTemplate(templ, result));
@@ -161,12 +142,7 @@ TEST_F(ScTemplateCommonTest, searchTripleWithRelation)
 
   {
     ScTemplate templ;
-    templ.TripleWithRelation(
-          addr1,
-          ScType::EdgeAccessVarPosPerm,
-          ScType::NodeVar,
-          ScType::EdgeAccessVarPosPerm,
-          addr3);
+    templ.TripleWithRelation(addr1, ScType::EdgeAccessVarPosPerm, ScType::NodeVar, ScType::EdgeAccessVarPosPerm, addr3);
 
     ScTemplateSearchResult result;
     EXPECT_TRUE(m_ctx->HelperSearchTemplate(templ, result));
@@ -177,11 +153,11 @@ TEST_F(ScTemplateCommonTest, searchTripleWithRelation)
     ScTemplate templ;
 
     templ.TripleWithRelation(
-          addr1 >> "1",
-          ScType::EdgeAccessVarPosPerm >> "2",
-          ScType::NodeVar >> "3",
-          ScType::EdgeAccessVarPosPerm >> "4",
-          addr3 >> "5");
+        addr1 >> "1",
+        ScType::EdgeAccessVarPosPerm >> "2",
+        ScType::NodeVar >> "3",
+        ScType::EdgeAccessVarPosPerm >> "4",
+        addr3 >> "5");
 
     ScTemplateSearchResult result;
     EXPECT_TRUE(m_ctx->HelperSearchTemplate(templ, result));
@@ -196,14 +172,8 @@ TEST_F(ScTemplateCommonTest, params_correct)
   ScAddr const addrTest6 = m_ctx->CreateNode(ScType::NodeConstClass);
 
   ScTemplate templ;
-  templ.Triple(
-        addrConst >> "1",
-        ScType::EdgeAccessVarPosPerm >> "_2",
-        ScType::NodeVarTuple >> "_3");
-  templ.Triple(
-        "_3",
-        ScType::EdgeAccessVarPosPerm >> "_5",
-        ScType::NodeVarClass >> "_6");
+  templ.Triple(addrConst >> "1", ScType::EdgeAccessVarPosPerm >> "_2", ScType::NodeVarTuple >> "_3");
+  templ.Triple("_3", ScType::EdgeAccessVarPosPerm >> "_5", ScType::NodeVarClass >> "_6");
 
   ScTemplateParams params;
   params.Add("_3", addrTest3).Add("_6", addrTest6);
@@ -212,14 +182,8 @@ TEST_F(ScTemplateCommonTest, params_correct)
   EXPECT_TRUE(m_ctx->HelperGenTemplate(templ, result, params));
 
   ScTemplate searchTempl;
-  searchTempl.Triple(
-        addrConst >> "1",
-        ScType::EdgeAccessVarPosPerm >> "_2",
-        ScType::NodeVarTuple >> "_3");
-  searchTempl.Triple(
-        "_3",
-        ScType::EdgeAccessVarPosPerm >> "_5",
-        ScType::NodeVarClass >> "_6");
+  searchTempl.Triple(addrConst >> "1", ScType::EdgeAccessVarPosPerm >> "_2", ScType::NodeVarTuple >> "_3");
+  searchTempl.Triple("_3", ScType::EdgeAccessVarPosPerm >> "_5", ScType::NodeVarClass >> "_6");
 
   ScTemplateSearchResult searchResult;
   EXPECT_TRUE(m_ctx->HelperSearchTemplate(searchTempl, searchResult));
@@ -236,9 +200,9 @@ TEST_F(ScTemplateCommonTest, params_invalid)
 
   ScTemplate templ;
   templ.Triple(
-        addrConst >> "1",
-        ScType::EdgeAccessVarPosPerm >> "_2", // can't be replaced by param in template generation
-        ScType::NodeVar >> "_3");	// can't be replaced by param in template generation
+      addrConst >> "1",
+      ScType::EdgeAccessVarPosPerm >> "_2",  // can't be replaced by param in template generation
+      ScType::NodeVar >> "_3");              // can't be replaced by param in template generation
 
   ScTemplateGenResult result;
   EXPECT_TRUE(m_ctx->HelperGenTemplate(templ, result));
@@ -255,26 +219,23 @@ TEST_F(ScTemplateCommonTest, params_invalid)
   {
     // target is const
     {
-      EXPECT_EQ(false, TestTemplParams(*m_ctx)(
-            addrConst >> "1",
-            ScType::EdgeAccessVarPosPerm >> "_2",
-            ScType::NodeConst >> "_3"));
+      EXPECT_EQ(
+          false,
+          TestTemplParams(*m_ctx)(addrConst >> "1", ScType::EdgeAccessVarPosPerm >> "_2", ScType::NodeConst >> "_3"));
     }
 
     // source is const
     {
-      EXPECT_EQ(false, TestTemplParams(*m_ctx)(
-            ScType::NodeConst >> "_1",
-            ScType::EdgeAccessVarPosPerm >> "_2",
-            addrConst >> "3"));
+      EXPECT_EQ(
+          false,
+          TestTemplParams(*m_ctx)(ScType::NodeConst >> "_1", ScType::EdgeAccessVarPosPerm >> "_2", addrConst >> "3"));
     }
 
     // edge is const
     {
-      EXPECT_EQ(false, TestTemplParams(*m_ctx)(
-            ScType::NodeVar >> "_1",
-            ScType::EdgeAccessConstPosPerm >> "_2",
-            addrConst >> "3"));
+      EXPECT_EQ(
+          false,
+          TestTemplParams(*m_ctx)(ScType::NodeVar >> "_1", ScType::EdgeAccessConstPosPerm >> "_2", addrConst >> "3"));
     }
   }
 }
@@ -312,16 +273,19 @@ TEST_F(ScTemplateCommonTest, a_a_a)
   EXPECT_TRUE(nrel_translationAddr.IsValid());
   EXPECT_TRUE(m_ctx->HelperSetSystemIdtf("nrel_translation", nrel_translationAddr));
 
-  ScAddr const _struct_locationEdgeAddr = m_ctx->CreateEdge(ScType::EdgeAccessVarPosPerm, _structAddr, _apiai_locationAddr);
+  ScAddr const _struct_locationEdgeAddr =
+      m_ctx->CreateEdge(ScType::EdgeAccessVarPosPerm, _structAddr, _apiai_locationAddr);
   EXPECT_TRUE(_struct_locationEdgeAddr.IsValid());
 
-  ScAddr const _rrel_locationEdgeAddr = m_ctx->CreateEdge(ScType::EdgeAccessVarPosPerm, rrel_locationAddr, _struct_locationEdgeAddr);
+  ScAddr const _rrel_locationEdgeAddr =
+      m_ctx->CreateEdge(ScType::EdgeAccessVarPosPerm, rrel_locationAddr, _struct_locationEdgeAddr);
   EXPECT_TRUE(_rrel_locationEdgeAddr.IsValid());
 
   ScAddr const _struct_speechEdgeAddr = m_ctx->CreateEdge(ScType::EdgeDCommonVar, _structAddr, _apiai_speechAddr);
   EXPECT_TRUE(_struct_speechEdgeAddr.IsValid());
 
-  ScAddr const _nrel_translationEdgeAddr = m_ctx->CreateEdge(ScType::EdgeAccessVarPosPerm, nrel_translationAddr, _struct_speechEdgeAddr);
+  ScAddr const _nrel_translationEdgeAddr =
+      m_ctx->CreateEdge(ScType::EdgeAccessVarPosPerm, nrel_translationAddr, _struct_speechEdgeAddr);
   EXPECT_TRUE(_nrel_translationEdgeAddr.IsValid());
 
   ScAddr const _langEdgeAddr = m_ctx->CreateEdge(ScType::EdgeAccessVarPosPerm, _langAddr, _apiai_speechAddr);
@@ -332,18 +296,9 @@ TEST_F(ScTemplateCommonTest, a_a_a)
   EXPECT_TRUE(templStructAddr.IsValid());
   ScStruct templStruct(*m_ctx, templStructAddr);
 
-  templStruct
-        << _structAddr
-        << _apiai_locationAddr
-        << _apiai_speechAddr
-        << _langAddr
-        << rrel_locationAddr
-        << nrel_translationAddr
-        << _struct_locationEdgeAddr
-        << _rrel_locationEdgeAddr
-        << _struct_speechEdgeAddr
-        << _nrel_translationEdgeAddr
-        << _langEdgeAddr;
+  templStruct << _structAddr << _apiai_locationAddr << _apiai_speechAddr << _langAddr << rrel_locationAddr
+              << nrel_translationAddr << _struct_locationEdgeAddr << _rrel_locationEdgeAddr << _struct_speechEdgeAddr
+              << _nrel_translationEdgeAddr << _langEdgeAddr;
 
   ScTemplate templ;
   EXPECT_TRUE(m_ctx->HelperBuildTemplate(templ, templStructAddr));
@@ -374,11 +329,7 @@ TEST_F(ScTemplateCommonTest, a_a_a_a_f)
 
   ScTemplate templ;
   templ.TripleWithRelation(
-        ScType::Unknown >> "_x",
-        ScType::EdgeDCommonVar,
-        ScType::Link,
-        ScType::EdgeAccessVarPosPerm,
-        nrelAddr);
+      ScType::Unknown >> "_x", ScType::EdgeDCommonVar, ScType::Link, ScType::EdgeAccessVarPosPerm, nrelAddr);
 
   ScTemplateSearchResult res;
   EXPECT_TRUE(m_ctx->HelperSearchTemplate(templ, res));
@@ -405,12 +356,7 @@ TEST_F(ScTemplateCommonTest, big_template_smoke)
   ScTemplate templ;
   for (auto const & a : elements)
   {
-    templ.TripleWithRelation(
-          set1,
-          ScType::EdgeDCommonVar,
-          a >> "_el",
-          ScType::EdgeAccessVarPosPerm,
-          rel);
+    templ.TripleWithRelation(set1, ScType::EdgeDCommonVar, a >> "_el", ScType::EdgeAccessVarPosPerm, rel);
   }
 
   ScTemplateGenResult genResult;

@@ -116,16 +116,13 @@ TEST_F(ScTemplateSearchTest, search_2)
   // now check search
   ScTemplate templ;
   templ.TripleWithRelation(
-    addr >> "_addr",
-    ScType::EdgeDCommonVar >> "_edgeCommon",
-    ScType::Link >> "_link",
-    ScType::EdgeAccessVarPosPerm >> "_edgeAttr",
-    nrelMainIdtf >> "_nrelMainIdtf");
+      addr >> "_addr",
+      ScType::EdgeDCommonVar >> "_edgeCommon",
+      ScType::Link >> "_link",
+      ScType::EdgeAccessVarPosPerm >> "_edgeAttr",
+      nrelMainIdtf >> "_nrelMainIdtf");
 
-  templ.Triple(
-    lang >> "_lang",
-    ScType::EdgeAccessVarPosPerm >> "_edgeLang",
-    "_link");
+  templ.Triple(lang >> "_lang", ScType::EdgeAccessVarPosPerm >> "_edgeLang", "_link");
 
   // search
   {
@@ -154,10 +151,7 @@ TEST_F(ScTemplateSearchTest, unknown_type)
   EXPECT_TRUE(edge.IsValid());
 
   ScTemplate templ;
-  templ.Triple(
-    addr1,
-    ScType::EdgeAccessVarPosPerm >> "edge",
-    ScType::Unknown >> "addr2");
+  templ.Triple(addr1, ScType::EdgeAccessVarPosPerm >> "edge", ScType::Unknown >> "addr2");
 
   ScTemplateSearchResult res;
   EXPECT_TRUE(m_ctx->HelperSearchTemplate(templ, res));
@@ -241,33 +235,21 @@ TEST_F(ScTemplateSearchTest, links_with_relation)
     ++i;
   }
 
-
   ScTemplate templ;
   templ.TripleWithRelation(
-    ScType::NodeVarTuple >> "_tuple",
-    ScType::EdgeDCommonVar,
-    deviceAddr,
-    ScType::EdgeAccessVarPosPerm,
-    nrelInstalledApp);
-
-  templ.Triple(
-    "_tuple",
-    ScType::EdgeAccessVarPosPerm,
-    ScType::NodeVar >> "_app");
-
-  templ.TripleWithRelation(
-    "_app",
-    ScType::EdgeDCommonVar,
-    ScType::Link >> "_idtf",
-    ScType::EdgeAccessVarPosPerm,
-    nrelIdtf);
-
-  templ.TripleWithRelation(
-      "_app",
+      ScType::NodeVarTuple >> "_tuple",
       ScType::EdgeDCommonVar,
-      ScType::Link >> "_image",
+      deviceAddr,
       ScType::EdgeAccessVarPosPerm,
-      nrelImage);
+      nrelInstalledApp);
+
+  templ.Triple("_tuple", ScType::EdgeAccessVarPosPerm, ScType::NodeVar >> "_app");
+
+  templ.TripleWithRelation(
+      "_app", ScType::EdgeDCommonVar, ScType::Link >> "_idtf", ScType::EdgeAccessVarPosPerm, nrelIdtf);
+
+  templ.TripleWithRelation(
+      "_app", ScType::EdgeDCommonVar, ScType::Link >> "_image", ScType::EdgeAccessVarPosPerm, nrelImage);
 
   ScTemplateSearchResult searchRes;
   EXPECT_TRUE(m_ctx->HelperSearchTemplate(templ, searchRes));
@@ -283,8 +265,7 @@ TEST_F(ScTemplateSearchTest, links_with_relation)
     d.m_image = searchRes[i]["_image"];
   }
 
-  auto compare = [](TestData const & a, TestData const & b)
-  {
+  auto compare = [](TestData const & a, TestData const & b) {
     return (a.m_app.Hash() < b.m_app.Hash());
   };
   std::sort(data.begin(), data.end(), compare);
@@ -313,15 +294,9 @@ TEST_F(ScTemplateSearchTest, result_deduplication)
   EXPECT_TRUE(a.IsValid());
 
   ScTemplate templ;
-  templ.Triple(
-    a >> "a",
-    ScType::EdgeAccessVarPosPerm,
-    ScType::NodeVarMaterial >> "b");
+  templ.Triple(a >> "a", ScType::EdgeAccessVarPosPerm, ScType::NodeVarMaterial >> "b");
 
-  templ.Triple(
-    "a",
-    ScType::EdgeAccessVarPosPerm,
-    ScType::NodeVar >> "c");
+  templ.Triple("a", ScType::EdgeAccessVarPosPerm, ScType::NodeVar >> "c");
 
   ScTemplateGenResult genResult;
   EXPECT_TRUE(m_ctx->HelperGenTemplate(templ, genResult));

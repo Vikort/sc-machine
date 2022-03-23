@@ -1,30 +1,27 @@
 /*
-* This source file is part of an OSTIS project. For the latest info, see http://ostis.net
-* Distributed under the MIT License
-* (See accompanying file COPYING.MIT or copy at http://opensource.org/licenses/MIT)
-*/
-
-#include <algorithm>
+ * This source file is part of an OSTIS project. For the latest info, see http://ostis.net
+ * Distributed under the MIT License
+ * (See accompanying file COPYING.MIT or copy at http://opensource.org/licenses/MIT)
+ */
 
 #include "GenerationUtils.hpp"
 
 #include <sc-memory/sc_iterator.hpp>
 
-#include "keynodes/coreKeynodes.hpp"
-#include "IteratorUtils.hpp"
 #include "CommonUtils.hpp"
+#include "IteratorUtils.hpp"
+#include "keynodes/coreKeynodes.hpp"
+#include <algorithm>
 
 using namespace scAgentsCommon;
 using namespace std;
 
 namespace utils
 {
-
 ScAddr GenerationUtils::wrapInOrientedSetBySequenceRelation(
-      ScMemoryContext * ms_context,
-      const ScAddrVector & addrVector,
-      const ScType & setType
-)
+    ScMemoryContext * ms_context,
+    const ScAddrVector & addrVector,
+    const ScType & setType)
 {
   ScAddr set = ms_context->CreateNode(setType);
   if (addrVector.empty())
@@ -44,10 +41,9 @@ ScAddr GenerationUtils::wrapInOrientedSetBySequenceRelation(
 }
 
 ScAddr GenerationUtils::wrapInOrientedSet(
-      ScMemoryContext * ms_context,
-      const ScAddrVector & addrVector,
-      const ScType & setType
-)
+    ScMemoryContext * ms_context,
+    const ScAddrVector & addrVector,
+    const ScType & setType)
 {
   const size_t maxRrelCountExceeded = 10;
   SC_ASSERT(addrVector.size() < maxRrelCountExceeded, ());
@@ -56,11 +52,7 @@ ScAddr GenerationUtils::wrapInOrientedSet(
   for (size_t i = 0; i < addrVector.size(); ++i)
   {
     ScAddr edge = ms_context->CreateEdge(ScType::EdgeAccessConstPosPerm, set, addrVector.at(i));
-    ms_context->CreateEdge(
-        ScType::EdgeAccessConstPosPerm,
-        IteratorUtils::getRoleRelation(ms_context, i + 1),
-        edge
-    );
+    ms_context->CreateEdge(ScType::EdgeAccessConstPosPerm, IteratorUtils::getRoleRelation(ms_context, i + 1), edge);
   }
 
   return set;
@@ -69,8 +61,7 @@ ScAddr GenerationUtils::wrapInOrientedSet(
 ScAddr GenerationUtils::wrapInSet(ScMemoryContext * ms_context, const ScAddrVector & addrVector, const ScType & setType)
 {
   ScAddr set = ms_context->CreateNode(setType);
-  std::for_each(addrVector.begin(), addrVector.end(), [&ms_context, &set](const auto & element)
-  {
+  std::for_each(addrVector.begin(), addrVector.end(), [&ms_context, &set](const auto & element) {
     ms_context->CreateEdge(ScType::EdgeAccessConstPosPerm, set, element);
   });
 
@@ -111,10 +102,10 @@ bool GenerationUtils::addSetToOutline(ScMemoryContext * ms_context, ScAddr const
 }
 
 bool GenerationUtils::addNodeWithOutRelationToOutline(
-      ScMemoryContext * ms_context,
-      ScAddr const & node,
-      ScAddr const & relation,
-      ScAddr const & outline)
+    ScMemoryContext * ms_context,
+    ScAddr const & node,
+    ScAddr const & relation,
+    ScAddr const & outline)
 {
   if (!node.IsValid() || !relation.IsValid() || !outline.IsValid())
     return false;
@@ -129,10 +120,10 @@ bool GenerationUtils::addNodeWithOutRelationToOutline(
 }
 
 bool GenerationUtils::generateRelationBetween(
-      ScMemoryContext * ms_context,
-      ScAddr const & start,
-      ScAddr const & finish,
-      ScAddr const & relation)
+    ScMemoryContext * ms_context,
+    ScAddr const & start,
+    ScAddr const & finish,
+    ScAddr const & relation)
 {
   bool isSuccess = false;
   bool isRole = CommonUtils::checkType(ms_context, relation, ScType::NodeConstRole);
@@ -146,4 +137,4 @@ bool GenerationUtils::generateRelationBetween(
   return isSuccess;
 }
 
-}
+}  // namespace utils

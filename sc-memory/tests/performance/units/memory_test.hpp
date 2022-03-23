@@ -1,8 +1,8 @@
 /*
-* This source file is part of an OSTIS project. For the latest info, see http://ostis.net
-* Distributed under the MIT License
-* (See accompanying file COPYING.MIT or copy at http://opensource.org/licenses/MIT)
-*/
+ * This source file is part of an OSTIS project. For the latest info, see http://ostis.net
+ * Distributed under the MIT License
+ * (See accompanying file COPYING.MIT or copy at http://opensource.org/licenses/MIT)
+ */
 
 #pragma once
 
@@ -49,8 +49,10 @@ public:
     return static_cast<bool>(m_ctx);
   }
 
-  virtual void Setup(size_t objectsNum) {}
+  virtual void Setup(size_t objectsNum)
+  {
+  }
 
 protected:
-  std::unique_ptr<ScMemoryContext> m_ctx {};
+  std::unique_ptr<ScMemoryContext> m_ctx{};
 };

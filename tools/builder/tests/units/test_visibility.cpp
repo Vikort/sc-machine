@@ -6,19 +6,14 @@
 
 namespace
 {
-
-std::string GetIdtf(ScMemoryContext & ctx, ScAddr const& addr)
+std::string GetIdtf(ScMemoryContext & ctx, ScAddr const & addr)
 {
   ScAddr const nrelIdtf = ctx.HelperResolveSystemIdtf("nrel_idtf", ScType::NodeConstNoRole);
   EXPECT_TRUE(nrelIdtf.IsValid());
 
   ScTemplate templ;
   templ.TripleWithRelation(
-    addr,
-    ScType::EdgeDCommonVar,
-    ScType::Link >> "_link",
-    ScType::EdgeAccessVarPosPerm,
-    nrelIdtf);
+      addr, ScType::EdgeDCommonVar, ScType::Link >> "_link", ScType::EdgeAccessVarPosPerm, nrelIdtf);
 
   ScTemplateSearchResult result;
   EXPECT_TRUE(ctx.HelperSearchTemplate(templ, result));
@@ -33,7 +28,7 @@ std::string GetIdtf(ScMemoryContext & ctx, ScAddr const& addr)
   return link.Get<std::string>();
 };
 
-} // namespace
+}  // namespace
 
 TEST_F(ScBuilderTest, visibility_sys_idtf)
 {
@@ -47,15 +42,9 @@ TEST_F(ScBuilderTest, visibility_sys_idtf)
   EXPECT_TRUE(element.IsValid());
 
   ScTemplate templ;
-  templ.Triple(
-    visFirst,
-    ScType::EdgeAccessVarPosPerm,
-    element);
+  templ.Triple(visFirst, ScType::EdgeAccessVarPosPerm, element);
 
-  templ.Triple(
-    visSecond,
-    ScType::EdgeAccessVarPosPerm,
-    element);
+  templ.Triple(visSecond, ScType::EdgeAccessVarPosPerm, element);
 
   ScTemplateSearchResult result;
   EXPECT_TRUE(m_ctx->HelperSearchTemplate(templ, result));
@@ -70,15 +59,9 @@ TEST_F(ScBuilderTest, visibility_global)
   EXPECT_TRUE(visSecond.IsValid());
 
   ScTemplate templ;
-  templ.Triple(
-    visFirst,
-    ScType::EdgeAccessVarPosTemp,
-    ScType::Node >> ".visibility_global");
+  templ.Triple(visFirst, ScType::EdgeAccessVarPosTemp, ScType::Node >> ".visibility_global");
 
-  templ.Triple(
-    visSecond,
-    ScType::EdgeAccessVarPosTemp,
-    ".visibility_global");
+  templ.Triple(visSecond, ScType::EdgeAccessVarPosTemp, ".visibility_global");
 
   ScTemplateSearchResult result;
   EXPECT_TRUE(m_ctx->HelperSearchTemplate(templ, result));
@@ -102,10 +85,7 @@ TEST_F(ScBuilderTest, visibility_local)
   EXPECT_TRUE(visLocal.IsValid());
 
   ScTemplate templ;
-  templ.Triple(
-    visLocal,
-    ScType::EdgeAccessVarPosPerm,
-    ScType::NodeVar >> "_local");
+  templ.Triple(visLocal, ScType::EdgeAccessVarPosPerm, ScType::NodeVar >> "_local");
 
   ScTemplateSearchResult result;
   EXPECT_TRUE(m_ctx->HelperSearchTemplate(templ, result));

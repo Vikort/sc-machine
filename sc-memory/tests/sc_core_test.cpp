@@ -5,19 +5,19 @@
 #include <libsc/segment_utils.h>
 #include <libsc/sc_segment.h>
 
-#define NODE_ALLOC_COUNT   5000000
+#define NODE_ALLOC_COUNT 5000000
 #define NODE_SEGMENT_COUNT 5000000
-#define ARC_ALLOC_COUNT    5000000
+#define ARC_ALLOC_COUNT 5000000
 
-GTimer *timer = 0;
-sc_session *s = 0;
-sc_segment *seg = 0;
+GTimer * timer = 0;
+sc_session * s = 0;
+sc_segment * seg = 0;
 
 std::vector<sc_addr> segment_node_del;
 std::vector<sc_addr> nodes_vector;
 std::vector<sc_addr> arcs_vector;
 
-double profile_func( void(*testFunc)(void) )
+double profile_func(void (*testFunc)(void))
 {
   double res = 0;
 
@@ -73,7 +73,7 @@ void testNodeSegmentation()
   printf("Test node segmentation\n");
   printf("Number of process nodes: %d\n", NODE_SEGMENT_COUNT);
 
-  sc_segment::iterator *it = seg->create_iterator_on_elements();
+  sc_segment::iterator * it = seg->create_iterator_on_elements();
   guint32 deleted = 0;
   guint32 iterated = 0;
   while (!it->is_over())
@@ -85,8 +85,8 @@ void testNodeSegmentation()
       sc_addr addr = seg->get_element_addr(addr_ll);
       if (iterated % 10 < 5)
       {
-	segment_node_del.push_back(addr);
-	deleted++;
+        segment_node_del.push_back(addr);
+        deleted++;
       }
 
       iterated++;
@@ -116,7 +116,7 @@ void testArcsCreation()
   printf("Test arcs creation\n");
   printf("Number of arcs: %d\n", NODE_SEGMENT_COUNT);
 
-  sc_segment::iterator *it = seg->create_iterator_on_elements();
+  sc_segment::iterator * it = seg->create_iterator_on_elements();
   while (!it->is_over())
   {
     sc_addr_ll addr_ll = it->next();
@@ -140,7 +140,7 @@ void testArcsCreation()
   printf("Arcs per second: %f\n", (float)(ARC_ALLOC_COUNT) / res);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
   timer = g_timer_new();
 
@@ -160,7 +160,7 @@ int main(int argc, char** argv)
 
   printf("\nPress any key...\n");
   getchar();
-  
+
   printf("Shutdown sc-core...\n");
   libsc_deinit();
 

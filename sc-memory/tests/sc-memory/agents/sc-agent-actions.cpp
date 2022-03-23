@@ -31,9 +31,9 @@ TEST_F(ScAgentTest, action_emit)
 
   testInitLock.Lock();
   ScAddr const cmd = ScAgentAction::CreateCommand(
-    *m_ctx,
-    ATestActionEmit::GetCommandClassAddr(),
-    { ATestActionEmit::ms_keynodeParam1, ATestActionEmit::ms_keynodeParam2 });
+      *m_ctx,
+      ATestActionEmit::GetCommandClassAddr(),
+      {ATestActionEmit::ms_keynodeParam1, ATestActionEmit::ms_keynodeParam2});
 
   SC_CHECK(cmd.IsValid(), ());
 

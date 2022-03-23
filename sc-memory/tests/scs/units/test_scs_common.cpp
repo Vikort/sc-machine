@@ -1,13 +1,12 @@
 /*
-* This source file is part of an OSTIS project. For the latest info, see http://ostis.net
-* Distributed under the MIT License
-* (See accompanying file COPYING.MIT or copy at http://opensource.org/licenses/MIT)
-*/
+ * This source file is part of an OSTIS project. For the latest info, see http://ostis.net
+ * Distributed under the MIT License
+ * (See accompanying file COPYING.MIT or copy at http://opensource.org/licenses/MIT)
+ */
 
 #include <gtest/gtest.h>
 
 #include "test_scs_utils.hpp"
-
 
 TEST(scs_common, ElementHandle)
 {
@@ -160,17 +159,18 @@ TEST(scs_common, const_var)
 
 TEST(scs_common, nodes)
 {
-  char const * data = "a -> b;;"
-                      "sc_node_tuple -> a;;"
-                      "sc_node_struct -> b;;"
-                      "sc_node_role_relation -> c;;"
-                      "c -> _d;;"
-                      "sc_node_norole_relation -> _d;;"
-                      "sc_node_class -> e;;"
-                      "e -> f;;"
-                      "sc_node_abstract -> f;;"
-                      "f -> g;;"
-                      "sc_node_material -> g;;";
+  char const * data =
+      "a -> b;;"
+      "sc_node_tuple -> a;;"
+      "sc_node_struct -> b;;"
+      "sc_node_role_relation -> c;;"
+      "c -> _d;;"
+      "sc_node_norole_relation -> _d;;"
+      "sc_node_class -> e;;"
+      "e -> f;;"
+      "sc_node_abstract -> f;;"
+      "f -> g;;"
+      "sc_node_material -> g;;";
 
   scs::Parser parser;
 
@@ -179,14 +179,12 @@ TEST(scs_common, nodes)
   auto const & triples = parser.GetParsedTriples();
   EXPECT_EQ(triples.size(), 4u);
   {
-    auto const CheckSourceNode = [&triples, &parser](size_t index, ScType type)
-    {
+    auto const CheckSourceNode = [&triples, &parser](size_t index, ScType type) {
       EXPECT_TRUE(index < triples.size());
       return (parser.GetParsedElement(triples[index].m_source).GetType() == type);
     };
 
-    auto const CheckTargetNode = [&triples, &parser](size_t index, ScType type)
-    {
+    auto const CheckTargetNode = [&triples, &parser](size_t index, ScType type) {
       EXPECT_TRUE(index < triples.size());
       return (parser.GetParsedElement(triples[index].m_target).GetType() == type);
     };
@@ -201,7 +199,6 @@ TEST(scs_common, nodes)
     EXPECT_TRUE(CheckTargetNode(3, ScType::NodeConstMaterial));
   }
 }
-
 
 TEST(scs_common, links)
 {
@@ -227,7 +224,6 @@ TEST(scs_common, links)
   EXPECT_FALSE(parser.GetParsedElement(triples[3].m_target).IsURL());
 }
 
-
 TEST(scs_common, backward_compatibility)
 {
   std::string const data = "a <- c;; a <- sc_node_not_relation;; b <- c;; b <- sc_node_not_binary_tuple;;";
@@ -244,11 +240,12 @@ TEST(scs_common, backward_compatibility)
 
 TEST(scs_common, edges)
 {
-  std::string const data = "x"
-                           "> _y; <> y4; ..> y5;"
-                           "<=> y7; _<=> y8; => y9; _=> y11;"
-                           "-> y2; _-> y13; -|> y15; _-|> y17; -/> y19; _-/> y21;"
-                           " ~> y23; _~> y25; ~|> y27; _~|> y29; ~/> y31; _~/> y33;;";
+  std::string const data =
+      "x"
+      "> _y; <> y4; ..> y5;"
+      "<=> y7; _<=> y8; => y9; _=> y11;"
+      "-> y2; _-> y13; -|> y15; _-|> y17; -/> y19; _-/> y21;"
+      " ~> y23; _~> y25; ~|> y27; _~|> y29; ~/> y31; _~/> y33;;";
 
   scs::Parser parser;
 
@@ -257,8 +254,7 @@ TEST(scs_common, edges)
   auto const & triples = parser.GetParsedTriples();
   EXPECT_EQ(triples.size(), 19u);
   {
-    auto const CheckEdgeType = [&triples, &parser](size_t index, ScType type) -> bool
-    {
+    auto const CheckEdgeType = [&triples, &parser](size_t index, ScType type) -> bool {
       EXPECT_TRUE(index < triples.size());
       return (parser.GetParsedElement(triples[index].m_edge).GetType() == type);
     };
@@ -287,7 +283,6 @@ TEST(scs_common, edges)
     EXPECT_TRUE(CheckEdgeType(18, ScType::EdgeAccessVarFuzTemp));
   }
 }
-
 
 TEST(scs_common, type_error)
 {

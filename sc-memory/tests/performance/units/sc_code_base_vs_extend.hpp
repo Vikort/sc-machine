@@ -1,8 +1,8 @@
 /*
-* This source file is part of an OSTIS project. For the latest info, see http://ostis.net
-* Distributed under the MIT License
-* (See accompanying file COPYING.MIT or copy at http://opensource.org/licenses/MIT)
-*/
+ * This source file is part of an OSTIS project. For the latest info, see http://ostis.net
+ * Distributed under the MIT License
+ * (See accompanying file COPYING.MIT or copy at http://opensource.org/licenses/MIT)
+ */
 
 #pragma once
 
@@ -11,7 +11,6 @@
 class TestScCodeExtended : public TestTemplate
 {
 public:
-
   void Setup(size_t constrCount) override
   {
     ScAddr const node = m_ctx->CreateNode(ScType::NodeConstClass);
@@ -24,18 +23,13 @@ public:
     }
 
     m_templ.TripleWithRelation(
-          node,
-          ScType::EdgeDCommonVar,
-          ScType::NodeVarAbstract,
-          ScType::EdgeAccessVarPosPerm,
-          attr);
+        node, ScType::EdgeDCommonVar, ScType::NodeVarAbstract, ScType::EdgeAccessVarPosPerm, attr);
   }
 };
 
 class TestScCodeBase : public TestTemplate
 {
 public:
-
   void Setup(size_t constrCount) override
   {
     ScAddr const kAbstract = m_ctx->CreateNode(ScType::NodeConst);
@@ -64,38 +58,17 @@ public:
     }
 
     m_templ.TripleWithRelation(
-          node >> "_node",
-          ScType::EdgeDCommonVar >> "_edge",
-          ScType::NodeVarAbstract >> "_trg",
-          ScType::EdgeAccessVarPosPerm,
-          attr >> "_attr");
-    m_templ.Triple(
-          kConst,
-          ScType::EdgeAccessVarPosPerm,
-          "_node");
-    m_templ.Triple(
-          kClass,
-          ScType::EdgeAccessVarPosPerm,
-          "_node");
-    m_templ.Triple(
-          kConst,
-          ScType::EdgeAccessVarPosPerm,
-          "_attr");
-    m_templ.Triple(
-          kRole,
-          ScType::EdgeAccessVarPosPerm,
-          "_attr");
-    m_templ.Triple(
-          kAbstract,
-          ScType::EdgeAccessVarPosPerm,
-          "_trg");
-    m_templ.Triple(
-          kConst,
-          ScType::EdgeAccessVarPosPerm,
-          "_trg");
-    m_templ.Triple(
-          kConst,
-          ScType::EdgeAccessVarPosPerm,
-          "_edge");
+        node >> "_node",
+        ScType::EdgeDCommonVar >> "_edge",
+        ScType::NodeVarAbstract >> "_trg",
+        ScType::EdgeAccessVarPosPerm,
+        attr >> "_attr");
+    m_templ.Triple(kConst, ScType::EdgeAccessVarPosPerm, "_node");
+    m_templ.Triple(kClass, ScType::EdgeAccessVarPosPerm, "_node");
+    m_templ.Triple(kConst, ScType::EdgeAccessVarPosPerm, "_attr");
+    m_templ.Triple(kRole, ScType::EdgeAccessVarPosPerm, "_attr");
+    m_templ.Triple(kAbstract, ScType::EdgeAccessVarPosPerm, "_trg");
+    m_templ.Triple(kConst, ScType::EdgeAccessVarPosPerm, "_trg");
+    m_templ.Triple(kConst, ScType::EdgeAccessVarPosPerm, "_edge");
   }
 };

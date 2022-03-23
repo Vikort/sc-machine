@@ -11,29 +11,38 @@
 #include "sc-memory/scs/scs_parser.hpp"
 
 #define SPLIT_TRIPLE(t) \
-  auto const & src = parser.GetParsedElement(t.m_source); SC_UNUSED(src); \
-  auto const & edge = parser.GetParsedElement(t.m_edge); SC_UNUSED(edge); \
-  auto const & trg = parser.GetParsedElement(t.m_target); SC_UNUSED(trg);
+  auto const & src = parser.GetParsedElement(t.m_source); \
+  SC_UNUSED(src); \
+  auto const & edge = parser.GetParsedElement(t.m_edge); \
+  SC_UNUSED(edge); \
+  auto const & trg = parser.GetParsedElement(t.m_target); \
+  SC_UNUSED(trg);
 
 struct TripleElement
 {
   TripleElement(ScType const & type)
-        : m_type(type), m_visibility(scs::Visibility::System)
+    : m_type(type)
+    , m_visibility(scs::Visibility::System)
   {
   }
 
   TripleElement(ScType const & type, std::string const & idtf)
-        : m_type(type), m_idtf(idtf), m_visibility(scs::Visibility::System)
+    : m_type(type)
+    , m_idtf(idtf)
+    , m_visibility(scs::Visibility::System)
   {
   }
 
   TripleElement(ScType const & type, std::string const & idtf, scs::Visibility const & vis)
-        : m_type(type), m_idtf(idtf), m_visibility(vis)
+    : m_type(type)
+    , m_idtf(idtf)
+    , m_visibility(vis)
   {
   }
 
   TripleElement(ScType const & type, scs::Visibility const & vis)
-        : m_type(type), m_visibility(vis)
+    : m_type(type)
+    , m_visibility(vis)
   {
   }
 
@@ -56,11 +65,9 @@ struct TripleElement
 inline std::ostream & operator<<(std::ostream & out, TripleElement const & t)
 {
   SC_LOG_ERROR(
-        "{ m_type: " << *t.m_type << ", m_idtf: \""
-                     << t.m_idtf << "\", m_visibility: " << int(t.m_visibility) << " }");
+      "{ m_type: " << *t.m_type << ", m_idtf: \"" << t.m_idtf << "\", m_visibility: " << int(t.m_visibility) << " }");
   return out;
 }
-
 
 struct TripleResult
 {
@@ -79,13 +86,12 @@ struct TripleResult
     catch (utils::ScException const & ex)
     {
       SC_LOG_ERROR(
-            "\nShould be: " << std::endl
-                            << " m_source: " << m_source << ", " << std::endl
-                            << " m_edge: " << m_edge << ", " << std::endl
-                            << " m_target: " << m_target << std::endl)
+          "\nShould be: " << std::endl
+                          << " m_source: " << m_source << ", " << std::endl
+                          << " m_edge: " << m_edge << ", " << std::endl
+                          << " m_target: " << m_target << std::endl)
 
-      auto const elToString = [](scs::ParsedElement const & el) -> std::string
-      {
+      auto const elToString = [](scs::ParsedElement const & el) -> std::string {
         std::stringstream ss;
 
         SC_LOG_ERROR("m_type: " << *el.GetType() << ", m_idtf: \"" << el.GetIdtf() << "\"")
@@ -94,10 +100,10 @@ struct TripleResult
       };
 
       SC_LOG_ERROR(
-            "\nParsed: " << std::endl
-                         << " m_source: " << elToString(src) << std::endl
-                         << " m_edge: " << elToString(edge) << std::endl
-                         << " m_target: " << elToString(trg) << std::endl)
+          "\nParsed: " << std::endl
+                       << " m_source: " << elToString(src) << std::endl
+                       << " m_edge: " << elToString(edge) << std::endl
+                       << " m_target: " << elToString(trg) << std::endl)
 
       throw ex;
     }
@@ -108,13 +114,14 @@ struct TripleResult
   TripleElement m_target;
 };
 
-
 using ResultTriples = std::vector<TripleResult>;
 
 struct TripleTester
 {
-  explicit TripleTester(scs::Parser const & parser) : m_parser(parser)
-  {}
+  explicit TripleTester(scs::Parser const & parser)
+    : m_parser(parser)
+  {
+  }
 
   void operator()(ResultTriples const & resultTriples)
   {

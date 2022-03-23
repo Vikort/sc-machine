@@ -9,12 +9,10 @@
 
 namespace sctp
 {
-
 glibSocket::glibSocket()
   : mConnection(NULL)
   , mClient(NULL)
 {
-
 }
 
 bool glibSocket::connect(std::string const & host, std::string const & port)
@@ -88,5 +86,4 @@ int glibSocket::write(void * buffer, unsigned int bytesCount)
   return (int)writtenBytes;
 }
 
-
-}
+}  // namespace sctp

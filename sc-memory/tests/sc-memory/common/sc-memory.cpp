@@ -5,7 +5,6 @@
 
 #include "sc_test.hpp"
 
-
 TEST_F(ScMemoryTest, LinkContent)
 {
   std::string str("test content string");

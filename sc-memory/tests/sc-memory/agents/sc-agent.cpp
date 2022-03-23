@@ -8,7 +8,6 @@
 
 namespace
 {
-
 ScAddr CreateKeynode(ScMemoryContext & ctx, std::string const & name)
 {
   ScAddr const node = ctx.CreateNode(ScType::NodeConst);
@@ -18,8 +17,7 @@ ScAddr CreateKeynode(ScMemoryContext & ctx, std::string const & name)
   return node;
 }
 
-} // namespace
-
+}  // namespace
 
 TEST_F(ScAgentTest, ATestAction)
 {

@@ -5,7 +5,8 @@
 
 #include "sc_test.hpp"
 
-template <typename Type> void TestType(ScMemoryContext & ctx, Type const & value)
+template <typename Type>
+void TestType(ScMemoryContext & ctx, Type const & value)
 {
   ScAddr const linkAddr = ctx.CreateLink();
   EXPECT_TRUE(linkAddr.IsValid());

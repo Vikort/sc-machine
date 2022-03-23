@@ -14,15 +14,13 @@ namespace
 {
 const double kTestTimeout = 5.0;
 
-template<typename EventClassT, typename PrepareF, typename EmitF>
+template <typename EventClassT, typename PrepareF, typename EmitF>
 void testEventsFuncT(ScMemoryContext & ctx, ScAddr const & addr, PrepareF prepare, EmitF emit)
 {
   prepare();
 
   volatile bool isDone = false;
-  auto const callback =
-      [&isDone](ScAddr const &, ScAddr const &, ScAddr const &)
-  {
+  auto const callback = [&isDone](ScAddr const &, ScAddr const &, ScAddr const &) {
     isDone = true;
     return true;
   };
@@ -38,19 +36,17 @@ void testEventsFuncT(ScMemoryContext & ctx, ScAddr const & addr, PrepareF prepar
   EXPECT_TRUE(isDone);
 }
 
-} // namespace
+}  // namespace
 
 TEST_F(ScEventTest, AddInputEdge)
 {
   ScAddr addr;
-  auto const CreateNode = [this, &addr]()
-  {
+  auto const CreateNode = [this, &addr]() {
     addr = m_ctx->CreateNode(ScType::Unknown);
     EXPECT_TRUE(addr.IsValid());
   };
 
-  auto const emitEvent = [this, &addr]()
-  {
+  auto const emitEvent = [this, &addr]() {
     ScAddr const addr2 = m_ctx->CreateNode(ScType::Unknown);
     EXPECT_TRUE(addr2.IsValid());
 
@@ -64,14 +60,12 @@ TEST_F(ScEventTest, AddInputEdge)
 TEST_F(ScEventTest, AddOutputEdge)
 {
   ScAddr addr;
-  auto const CreateNode = [this, &addr]()
-  {
+  auto const CreateNode = [this, &addr]() {
     addr = m_ctx->CreateNode(ScType::Unknown);
     EXPECT_TRUE(addr.IsValid());
   };
 
-  auto const emitEvent = [this, &addr]()
-  {
+  auto const emitEvent = [this, &addr]() {
     ScAddr const addr2 = m_ctx->CreateNode(ScType::Unknown);
     EXPECT_TRUE(addr2.IsValid());
 
@@ -94,8 +88,7 @@ TEST_F(ScEventTest, RemoveInputEdge)
   EXPECT_TRUE(edge.IsValid());
 
   auto const prepare = []() {};
-  auto const emitEvent = [this, &edge]()
-  {
+  auto const emitEvent = [this, &edge]() {
     EXPECT_TRUE(m_ctx->EraseElement(edge));
   };
 
@@ -114,8 +107,7 @@ TEST_F(ScEventTest, RemoveOutputEdge)
   EXPECT_TRUE(edge.IsValid());
 
   auto const prepare = []() {};
-  auto const emitEvent = [this, &edge]()
-  {
+  auto const emitEvent = [this, &edge]() {
     EXPECT_TRUE(m_ctx->EraseElement(edge));
   };
 
@@ -128,8 +120,7 @@ TEST_F(ScEventTest, ContentChanged)
   EXPECT_TRUE(addr.IsValid());
 
   auto const prepare = []() {};
-  auto const emitEvent = [this, &addr]()
-  {
+  auto const emitEvent = [this, &addr]() {
     std::string const value("test");
     ScStreamPtr stream = ScStreamMakeRead(value);
     EXPECT_TRUE(m_ctx->SetLinkContent(addr, stream));
@@ -144,8 +135,7 @@ TEST_F(ScEventTest, EraseElement)
   EXPECT_TRUE(addr.IsValid());
 
   auto const prepare = []() {};
-  auto const emitEvent = [this, &addr]()
-  {
+  auto const emitEvent = [this, &addr]() {
     EXPECT_TRUE(m_ctx->EraseElement(addr));
   };
 
@@ -157,11 +147,10 @@ TEST_F(ScEventTest, destroy_order)
   ScAddr const node = m_ctx->CreateNode(ScType::Unknown);
   EXPECT_TRUE(node.IsValid());
 
-  ScEventAddOutputEdge * evt = new ScEventAddOutputEdge(*m_ctx, node,
-    [](ScAddr const &, ScAddr const &, ScAddr const &)
-  {
-    return true;
-  });
+  ScEventAddOutputEdge * evt =
+      new ScEventAddOutputEdge(*m_ctx, node, [](ScAddr const &, ScAddr const &, ScAddr const &) {
+        return true;
+      });
 
   m_ctx.reset();
 
@@ -174,9 +163,7 @@ TEST_F(ScEventTest, events_lock)
   ScAddr const node = m_ctx->CreateNode(ScType::NodeConst);
   ScAddr const node2 = m_ctx->CreateNode(ScType::NodeConst);
 
-  ScEventAddOutputEdge evt(*m_ctx, node,
-    [](ScAddr const & addr, ScAddr const &, ScAddr const &)
-  {
+  ScEventAddOutputEdge evt(*m_ctx, node, [](ScAddr const & addr, ScAddr const &, ScAddr const &) {
     bool result = false;
     ScMemoryContext localCtx(sc_access_lvl_make_min);
     ScIterator3Ptr it = localCtx.Iterator3(addr, ScType::EdgeAccessConstPosPerm, ScType::Unknown);
@@ -213,45 +200,37 @@ TEST_F(ScEventTest, pend_events)
   ScTemplate templ;
   for (auto const & a : elements)
   {
-    templ.TripleWithRelation(
-      set1,
-      ScType::EdgeDCommonVar,
-      a >> "_el",
-      ScType::EdgeAccessVarPosPerm,
-      rel);
+    templ.TripleWithRelation(set1, ScType::EdgeDCommonVar, a >> "_el", ScType::EdgeAccessVarPosPerm, rel);
   }
 
   std::atomic_uint eventsCount(0);
   std::atomic_uint passedCount(0);
 
-  ScEventAddOutputEdge evt(*m_ctx, set1,
-    [&passedCount, &eventsCount, &set1, &elements, &rel](ScAddr const &, ScAddr const &, ScAddr const &)
-  {
-    std::shared_ptr<ScTemplate> checkTempl(new ScTemplate());
-    size_t step = 100;
-    size_t testNum = el_num / step - 1;
-    for (size_t i = 0; i < testNum; ++i)
-    {
-      checkTempl->TripleWithRelation(
-        set1,
-        ScType::EdgeDCommonVar,
-        elements[i * step] >> "_el",
-        ScType::EdgeAccessVarPosPerm,
-        rel);
-    }
+  ScEventAddOutputEdge evt(
+      *m_ctx,
+      set1,
+      [&passedCount, &eventsCount, &set1, &elements, &rel](ScAddr const &, ScAddr const &, ScAddr const &) {
+        std::shared_ptr<ScTemplate> checkTempl(new ScTemplate());
+        size_t step = 100;
+        size_t testNum = el_num / step - 1;
+        for (size_t i = 0; i < testNum; ++i)
+        {
+          checkTempl->TripleWithRelation(
+              set1, ScType::EdgeDCommonVar, elements[i * step] >> "_el", ScType::EdgeAccessVarPosPerm, rel);
+        }
 
-    ScMemoryContext localCtx(sc_access_lvl_make_min);
+        ScMemoryContext localCtx(sc_access_lvl_make_min);
 
-    ScTemplateSearchResult res;
-    EXPECT_TRUE(localCtx.HelperSearchTemplate(*checkTempl, res));
+        ScTemplateSearchResult res;
+        EXPECT_TRUE(localCtx.HelperSearchTemplate(*checkTempl, res));
 
-    if (res.Size() == 1)
-      passedCount.fetch_add(1);
+        if (res.Size() == 1)
+          passedCount.fetch_add(1);
 
-    eventsCount.fetch_add(1);
+        eventsCount.fetch_add(1);
 
-    return true;
-  });
+        return true;
+      });
 
   ScTemplateGenResult genResult;
   EXPECT_TRUE(m_ctx->HelperGenTemplate(templ, genResult));

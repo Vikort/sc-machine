@@ -43,14 +43,19 @@ void print_storage_statistics()
   sc_uint32 arcs = stat.arc_count;
   sc_uint32 links = stat.link_count;
 
-  printf("--- Storage statistics: ---\n \tSegments: %u\n\tNodes: %u\n\tArcs: %u\n\tLinks: %u\n\tEmpty: %u\n---\n",
-         stat.segments_count, nodes, arcs, links, stat.empty_count);
+  printf(
+      "--- Storage statistics: ---\n \tSegments: %u\n\tNodes: %u\n\tArcs: %u\n\tLinks: %u\n\tEmpty: %u\n---\n",
+      stat.segments_count,
+      nodes,
+      arcs,
+      links,
+      stat.empty_count);
 }
 
 // -------------------------
 gpointer create_context(gpointer data)
 {
-  std::vector<sc_memory_context*> contexts;
+  std::vector<sc_memory_context *> contexts;
   contexts.resize(SC_ACCESS_LVL_MAX_VALUE * SC_ACCESS_LVL_MAX_VALUE);
   for (sc_uint32 i = 0; i < SC_ACCESS_LVL_MAX_VALUE; ++i)
   {
@@ -60,7 +65,6 @@ gpointer create_context(gpointer data)
       g_usleep(g_random_int() % 100);
     }
   }
-
 
   for (sc_uint32 i = 0; i < contexts.size(); ++i)
     sc_memory_context_free(contexts[i]);
@@ -74,7 +78,7 @@ void test_context()
 
   initialize_memory();
 
-  std::vector<GThread*> threads;
+  std::vector<GThread *> threads;
   threads.resize(thread_count);
 
   std::cout << "Threads: " << thread_count << std::endl;
@@ -111,16 +115,14 @@ void test_access_levels()
   g_assert(sc_access_lvl_check_read(a, b));
   g_assert(!sc_access_lvl_check_write(a, b));
 
-
-
   initialize_memory();
 
   sc_access_levels al1 = sc_access_lvl_make(5, 5);
   sc_access_levels al2 = sc_access_lvl_make(SC_ACCESS_LVL_MIN_VALUE, SC_ACCESS_LVL_MIN_VALUE);
   sc_access_levels al_max = sc_access_lvl_make(SC_ACCESS_LVL_MAX_VALUE, SC_ACCESS_LVL_MAX_VALUE);
 
-  sc_memory_context *ctx1 = sc_memory_context_new(al1);
-  sc_memory_context *ctx2 = sc_memory_context_new(al2);
+  sc_memory_context * ctx1 = sc_memory_context_new(al1);
+  sc_memory_context * ctx2 = sc_memory_context_new(al2);
 
   sc_addr addr1 = sc_memory_node_new(ctx1, sc_type_node_abstract);
   sc_addr addr2 = sc_memory_node_new(ctx2, sc_type_node_class);
@@ -132,7 +134,6 @@ void test_access_levels()
 
   r = sc_memory_get_element_type(ctx2, addr1, &type);
   g_assert(r == SC_RESULT_ERROR_NO_READ_RIGHTS);
-
 
   // get rights
   sc_access_levels al;
@@ -185,12 +186,12 @@ void test_access_levels()
   sc_uint32 count = 0;
   r = sc_memory_find_links_with_content(ctx1, stream3, &result, &count);
   g_assert(r == SC_RESULT_OK && (count == 2));
-  g_assert((SC_ADDR_IS_EQUAL(result[0], link1) && SC_ADDR_IS_EQUAL(result[1], link2)) ||
+  g_assert(
+      (SC_ADDR_IS_EQUAL(result[0], link1) && SC_ADDR_IS_EQUAL(result[1], link2)) ||
       (SC_ADDR_IS_EQUAL(result[1], link1) && SC_ADDR_IS_EQUAL(result[0], link2)));
 
   r = sc_memory_find_links_with_content(ctx2, stream3, &result, &count);
   g_assert(r == SC_RESULT_OK && (count == 1) && (SC_ADDR_IS_EQUAL(result[0], link2)));
-
 
   // arcs
   sc_addr arc1 = sc_memory_arc_new(ctx1, 0, addr1, link1);
@@ -229,7 +230,7 @@ void test_access_levels()
   arc1 = sc_memory_arc_new(ctx2, sc_type_arc_pos_const_perm, addr1, addr2);
   arc2 = sc_memory_arc_new(ctx1, sc_type_arc_pos_const_perm, el_addr, arc1);
 
-  sc_iterator3 *it3 = sc_iterator3_a_a_f_new(ctx2, 0, 0, addr2);
+  sc_iterator3 * it3 = sc_iterator3_a_a_f_new(ctx2, 0, 0, addr2);
   g_assert(it3 != 0);
   g_assert(sc_iterator3_next(it3) == SC_TRUE);
   g_assert(SC_ADDR_IS_EQUAL(sc_iterator3_value(it3, 0), addr1));
@@ -268,7 +269,7 @@ void test_access_levels()
   g_assert(sc_iterator3_next(it3) == SC_FALSE);
   sc_iterator3_free(it3);
 
-  sc_iterator5 *it5 = sc_iterator5_a_a_f_a_a_new(ctx2, 0, 0, addr2, 0, 0);
+  sc_iterator5 * it5 = sc_iterator5_a_a_f_a_a_new(ctx2, 0, 0, addr2, 0, 0);
   g_assert(it5 != 0);
   g_assert(sc_iterator5_next(it5) == SC_FALSE);
   sc_iterator5_free(it5);
@@ -307,7 +308,7 @@ void test_deletion()
 {
   initialize_memory();
 
-  sc_memory_context *ctx = sc_memory_context_new(sc_access_lvl_make_max);
+  sc_memory_context * ctx = sc_memory_context_new(sc_access_lvl_make_max);
 
   // dest deletion of elements in iterator range (not current position of iterator)
   {
@@ -321,10 +322,7 @@ void test_deletion()
       arcs[i] = sc_memory_arc_new(ctx, sc_type_arc_pos_const_perm, node, nodes[i]);
     }
 
-    sc_iterator3 *it = sc_iterator3_f_a_a_new(ctx,
-                                              node,
-                                              sc_type_arc_pos_const_perm,
-                                              sc_type_node);
+    sc_iterator3 * it = sc_iterator3_f_a_a_new(ctx, node, sc_type_arc_pos_const_perm, sc_type_node);
     /// @todo reqrite test to don't depend on order of iterator results.
     /// Now memory stores arcs in reverse to creation order
     sc_uint32 i = 5;
@@ -340,10 +338,7 @@ void test_deletion()
     // delete on of arcs, and check iterator
     sc_memory_element_free(ctx, nodes[1]);
     i = 5;
-    it = sc_iterator3_f_a_a_new(ctx,
-                                node,
-                                sc_type_arc_pos_const_perm,
-                                sc_type_node);
+    it = sc_iterator3_f_a_a_new(ctx, node, sc_type_arc_pos_const_perm, sc_type_node);
     while (sc_iterator3_next(it))
     {
       i--;
@@ -366,10 +361,7 @@ void test_deletion()
     }
 
     // remove arc that used in iteration
-    sc_iterator3 *it = sc_iterator3_f_a_a_new(ctx,
-                                              node,
-                                              sc_type_arc_pos_const_perm,
-                                              sc_type_node);
+    sc_iterator3 * it = sc_iterator3_f_a_a_new(ctx, node, sc_type_arc_pos_const_perm, sc_type_node);
 
     g_assert(sc_iterator3_next(it) == SC_TRUE);
     g_assert(SC_ADDR_IS_EQUAL(sc_iterator3_value(it, 2), nodes[4]));
@@ -394,10 +386,7 @@ void test_deletion()
       sc_memory_arc_new(ctx, sc_type_arc_pos_const_perm, nodes[i], node);
     }
 
-    it = sc_iterator3_a_a_f_new(ctx,
-                                sc_type_node,
-                                sc_type_arc_pos_const_perm,
-                                node);
+    it = sc_iterator3_a_a_f_new(ctx, sc_type_node, sc_type_arc_pos_const_perm, node);
 
     g_assert(sc_iterator3_next(it) == SC_TRUE);
     g_assert(SC_ADDR_IS_EQUAL(sc_iterator3_value(it, 0), nodes[4]));
@@ -422,10 +411,7 @@ void test_deletion()
       sc_memory_arc_new(ctx, sc_type_arc_pos_const_perm, node, nodes[i]);
     }
 
-    it = sc_iterator3_f_a_a_new(ctx,
-                                node,
-                                sc_type_arc_pos_const_perm,
-                                0);
+    it = sc_iterator3_f_a_a_new(ctx, node, sc_type_arc_pos_const_perm, 0);
 
     g_assert(sc_memory_element_free(ctx, node) == SC_RESULT_OK);
     g_assert(sc_iterator3_next(it) == SC_FALSE);
@@ -447,7 +433,7 @@ void test_deletion()
       sc_memory_arc_new(ctx, sc_type_arc_pos_const_perm, n2[i], a);
     }
 
-    sc_iterator5 *it = sc_iterator5_f_a_a_a_a_new(ctx, node, 0, 0, 0, 0);
+    sc_iterator5 * it = sc_iterator5_f_a_a_a_a_new(ctx, node, 0, 0, 0, 0);
 
     g_assert(sc_iterator5_next(it) == SC_TRUE);
     g_assert(SC_ADDR_IS_EQUAL(sc_iterator5_value(it, 2), n1[2]));
@@ -466,11 +452,11 @@ void test_deletion()
   {
     sc_addr link = sc_memory_link_new(ctx);
 
-    char const *data = "test content";
-    sc_stream *stream = sc_stream_memory_new(data, (sc_uint)strlen(data), SC_STREAM_FLAG_READ, SC_FALSE);
+    char const * data = "test content";
+    sc_stream * stream = sc_stream_memory_new(data, (sc_uint)strlen(data), SC_STREAM_FLAG_READ, SC_FALSE);
     g_assert(sc_memory_set_link_content(ctx, link, stream) == SC_RESULT_OK);
 
-    sc_addr *results = 0;
+    sc_addr * results = 0;
     sc_uint32 count = 0;
     g_assert(sc_memory_find_links_with_content(ctx, stream, &results, &count) == SC_RESULT_OK);
     g_assert(count == 1);
@@ -490,7 +476,7 @@ void test_deletion()
 void test_states()
 {
   initialize_memory();
-  sc_memory_context *ctx = sc_memory_context_new(sc_access_lvl_make_max);
+  sc_memory_context * ctx = sc_memory_context_new(sc_access_lvl_make_max);
 
   sc_addr n1 = sc_memory_node_new(ctx, 0);
   sc_addr n2 = sc_memory_node_new(ctx, 0);
@@ -505,7 +491,7 @@ void test_states()
   shutdown_memory();
 }
 
-sc_bool test_stream_equal(sc_stream const *s1, sc_stream const *s2)
+sc_bool test_stream_equal(sc_stream const * s1, sc_stream const * s2)
 {
   sc_uint32 l1, l2;
   g_assert(sc_stream_get_length(s1, &l1) == SC_RESULT_OK);
@@ -534,20 +520,20 @@ sc_bool test_stream_equal(sc_stream const *s1, sc_stream const *s2)
 void test_links()
 {
   initialize_memory();
-  sc_memory_context *ctx = sc_memory_context_new(sc_access_lvl_make_max);
+  sc_memory_context * ctx = sc_memory_context_new(sc_access_lvl_make_max);
 
   // check change of content
   {
-    char const *data = "test content";
-    sc_stream *stream = sc_stream_memory_new(data, (sc_uint)strlen(data), SC_STREAM_FLAG_READ, SC_FALSE);
-    char const *data2 = "test content 2";
-    sc_stream *stream2 = sc_stream_memory_new(data2, (sc_uint)strlen(data2), SC_STREAM_FLAG_READ, SC_FALSE);
+    char const * data = "test content";
+    sc_stream * stream = sc_stream_memory_new(data, (sc_uint)strlen(data), SC_STREAM_FLAG_READ, SC_FALSE);
+    char const * data2 = "test content 2";
+    sc_stream * stream2 = sc_stream_memory_new(data2, (sc_uint)strlen(data2), SC_STREAM_FLAG_READ, SC_FALSE);
 
     sc_addr link = sc_memory_link_new(ctx);
     g_assert(sc_memory_set_link_content(ctx, link, stream) == SC_RESULT_OK);
     g_assert(sc_memory_set_link_content(ctx, link, stream2) == SC_RESULT_OK);
 
-    sc_addr *result;
+    sc_addr * result;
     sc_uint32 count;
     g_assert(sc_memory_find_links_with_content(ctx, stream, &result, &count) == SC_RESULT_ERROR_NOT_FOUND);
     g_assert(count == 0);
@@ -555,7 +541,7 @@ void test_links()
     g_assert(sc_memory_find_links_with_content(ctx, stream2, &result, &count) == SC_RESULT_OK);
     g_assert(count == 1);
 
-    sc_stream *rstream;
+    sc_stream * rstream;
     g_assert(sc_memory_get_link_content(ctx, link, &rstream) == SC_RESULT_OK);
     g_assert(rstream != null_ptr);
     g_assert(test_stream_equal(stream2, rstream) == SC_TRUE);
@@ -566,8 +552,8 @@ void test_links()
 
   // test links store in memory
   {
-    char const *data = "short content";
-    char const *data2 = "very large content, that will be store in file memory";
+    char const * data = "short content";
+    char const * data2 = "very large content, that will be store in file memory";
 
     g_assert(strlen(data) < SC_CHECKSUM_LEN);
     g_assert(strlen(data2) >= SC_CHECKSUM_LEN);
@@ -575,8 +561,8 @@ void test_links()
     sc_addr link1 = sc_memory_link_new(ctx);
     sc_addr link2 = sc_memory_link_new(ctx);
 
-    sc_stream *stream1 = sc_stream_memory_new(data, (sc_uint)strlen(data), SC_STREAM_FLAG_READ, SC_FALSE);
-    sc_stream *stream2 = sc_stream_memory_new(data2, (sc_uint)strlen(data2), SC_STREAM_FLAG_READ, SC_FALSE);
+    sc_stream * stream1 = sc_stream_memory_new(data, (sc_uint)strlen(data), SC_STREAM_FLAG_READ, SC_FALSE);
+    sc_stream * stream2 = sc_stream_memory_new(data2, (sc_uint)strlen(data2), SC_STREAM_FLAG_READ, SC_FALSE);
 
     g_assert(sc_memory_set_link_content(ctx, link1, stream1) == SC_RESULT_OK);
     g_assert(sc_memory_set_link_content(ctx, link2, stream2) == SC_RESULT_OK);
@@ -595,7 +581,7 @@ void test_links()
     g_assert(sc_stream_seek(stream2, SC_STREAM_SEEK_SET, 0) == SC_RESULT_OK);
 
     // find links
-    sc_addr *result;
+    sc_addr * result;
     sc_uint32 count;
     g_assert(sc_memory_find_links_with_content(ctx, stream1, &result, &count) == SC_RESULT_OK);
     g_assert(count == 1);
@@ -625,7 +611,6 @@ void test_links()
 // --------------------
 namespace
 {
-
 std::string genIdtf(int idx)
 {
   std::stringstream ss;
@@ -633,7 +618,7 @@ std::string genIdtf(int idx)
   return ss.str();
 }
 
-}
+}  // namespace
 
 void test_save()
 {
@@ -673,19 +658,21 @@ void test_save()
   {
     std::string const s = genIdtf(i);
 
-    //sc_result sc_helper_find_element_by_system_identifier(sc_memory_context const * ctx, const sc_char* data, sc_uint32 len, sc_addr *result_addr);
+    // sc_result sc_helper_find_element_by_system_identifier(sc_memory_context const * ctx, const sc_char* data,
+    // sc_uint32 len, sc_addr *result_addr);
     sc_addr addr;
-    g_assert(sc_helper_find_element_by_system_identifier(s_default_ctx, s.c_str(), (sc_uint32)s.size(), &addr) == SC_RESULT_OK);
+    g_assert(
+        sc_helper_find_element_by_system_identifier(s_default_ctx, s.c_str(), (sc_uint32)s.size(), &addr) ==
+        SC_RESULT_OK);
     g_assert(SC_ADDR_IS_EQUAL(addr, addrs[i]));
   }
 
   sc_memory_context_free(s_default_ctx);
   sc_memory_shutdown(SC_TRUE);
-
 }
 
 // ---------------------------
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
   sc_memory_params_clear(&params);
 
@@ -694,7 +681,12 @@ int main(int argc, char *argv[])
   params.config_file = "sc-memory.ini";
   params.ext_path = 0;
 
-  printf("sc_element: %zd, sc_addr: %zd, sc_arc: %zd, sc_content: %zd", sizeof(sc_element), sizeof(sc_addr), sizeof(sc_arc_info), sizeof(sc_content));
+  printf(
+      "sc_element: %zd, sc_addr: %zd, sc_arc: %zd, sc_content: %zd",
+      sizeof(sc_element),
+      sizeof(sc_addr),
+      sizeof(sc_arc_info),
+      sizeof(sc_content));
 
   g_test_init(&argc, &argv, NULL);
   /// TODO: add test for verion utils
@@ -706,7 +698,6 @@ int main(int argc, char *argv[])
   g_test_add_func("/common/states", test_states);
   g_test_add_func("/common/links", test_links);
   g_test_run();
-
 
   return 0;
 }

@@ -17,10 +17,8 @@ extern "C"
 
 namespace sctp
 {
-
 class glibSocket : public ISocket
 {
-
 public:
   explicit glibSocket();
 
@@ -30,15 +28,15 @@ public:
   bool isConnected() const;
 
   /** Reads data from socket into buffer (buffer size must be equal to bytesCount).
-     * Returns number of bytes that was read. If returned value is -1,
-     * then there was error while read data.
-     */
+   * Returns number of bytes that was read. If returned value is -1,
+   * then there was error while read data.
+   */
   int read(void * buffer, unsigned int bytesCount);
 
   /** Writes data into socket from buffer (buffer size must be equal to bytesCount)
-     * Returns number of bytes that was written. If returned value is -1,
-     * then there was error while write data.
-     */
+   * Returns number of bytes that was written. If returned value is -1,
+   * then there was error while write data.
+   */
   int write(void * buffer, unsigned int bytesCount);
 
 private:
@@ -49,4 +47,4 @@ private:
   GOutputStream * mOutputStream;
 };
 
-}
+}  // namespace sctp

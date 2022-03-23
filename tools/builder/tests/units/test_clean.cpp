@@ -11,11 +11,7 @@ TEST_F(ScBuilderTest, clean_global_idtfs)
 
   ScTemplate templ;
   templ.TripleWithRelation(
-    ScType::Unknown,
-    ScType::EdgeDCommonVar,
-    ScType::Link >> "_link",
-    ScType::EdgeAccessVarPosPerm,
-    nrelSCsIdtf);
+      ScType::Unknown, ScType::EdgeDCommonVar, ScType::Link >> "_link", ScType::EdgeAccessVarPosPerm, nrelSCsIdtf);
 
   ScTemplateSearchResult res;
   EXPECT_FALSE(m_ctx->HelperSearchTemplate(templ, res));
