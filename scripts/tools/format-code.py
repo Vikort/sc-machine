@@ -17,6 +17,7 @@ ignore_files = [
   "json/json.hpp",
   "sha256",
   "tinyxml",
+  "generated"
 ]
 
 class Formatter:
