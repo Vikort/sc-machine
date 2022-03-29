@@ -8,9 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Run clang-format style check for C/C++/Protobuf programs.
-        uses: jidicula/clang-format-action@v4.5.0
+      - name: clang-format lint
+        uses: DoozyX/clang-format-lint-action@v0.13
         with:
-          clang-format-version: '13'
-          check-path: '.'
-          exclude-regex: 'thirdparty'
+          source: '.'
+          exclude: './thirdparty'
+          extensions: 'h,cpp,c'
+          clangFormatVersion: 13
