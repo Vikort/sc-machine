@@ -17,6 +17,10 @@ function(make_tests_from_folder folder)
   target_link_libraries(${target} gtest ${TEST_DEPENDS})
   target_include_directories(${target} PRIVATE ${TEST_INCLUDES})
 
+  if(${SC_CLANG_FORMAT_CODE})
+	  target_clangformat_setup(${target})
+  endif()
+
   add_test(NAME ${target} COMMAND ${target} ${TEST_ARGUMENTS})
 
 endfunction()

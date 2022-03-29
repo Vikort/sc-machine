@@ -14,6 +14,12 @@ option (SC_AUTO_TEST "Flag to build for automation testing" OFF)
 option (SC_KPM_SCP "Flag to build SCP module" OFF)
 option (SC_BUILD_SCTP "Flag to turn on/off sctp protocol support" ON)
 option (SC_BUILD_TESTS "Flag to build unit tests" OFF)
+option (SC_CLANG_FORMAT_CODE "Flag to format code with clang" OFF)
+
+if(${SC_CLANG_FORMAT_CODE})
+	list(APPEND CMAKE_MODULE_PATH ${SC_MACHINE_THIRDPARTY_PATH}/clangformat-cmake/cmake)
+	include(ClangFormat)
+endif()
 
 if (${SC_BUILD_ARM64})
     check_c_compiler_flag("-arch arm64" IS_ARM64_SUPPORTED)
