@@ -74,6 +74,7 @@ jobs:
           execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
 
       - name: Configure
+        shell: cmake -P {0}
         run: |
           file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}" ccache_basedir)
           set(ENV{CCACHE_BASEDIR} "${ccache_basedir}")
