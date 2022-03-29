@@ -8,10 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: clang-format lint
-        uses: DoozyX/clang-format-lint-action@v0.13
+      - name: Clang Format Github Action
+        uses: RafikFarhad/clang-format-github-action@v2.0.0
         with:
-          source: '.'
-          exclude: './thirdparty'
-          extensions: 'h,cpp,c'
-          clangFormatVersion: 13
+          source: './sc-kpm,./sc-memory,./sc-network,./sc-server,./tools'
+          style: 'file'
