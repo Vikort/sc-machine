@@ -4,14 +4,17 @@ import asyncio
 import os
 import threading
 import tornado
+import json
 
 from ws_sc_json import ScJsonSocketHandler
 from common import ScModule
 from keynodes import Keynodes
+from reader_rocksdb import RocksdbReader
 
 from sc import *
 
 self_path = os.path.dirname(__file__)
+reader = None
 
 
 class DebugStaticFileHandler(tornado.web.StaticFileHandler):
@@ -27,6 +30,72 @@ class MainHandler(tornado.web.RequestHandler):
   def get(self, path):
     self.render(os.path.join(getScConfigValue('web', 'path'),
                              "client/assets/templates/index.html"))
+
+
+class AddrsHandler(tornado.web.RequestHandler):
+    def initialize(self, sys, main, common):
+        self.sys = sys
+        self.main = main
+        self.common = common
+
+    def get(self):
+        result = {
+            'sys': self.sys,
+            'main': self.main,
+            'common': self.common
+        }
+
+        self.set_header("Content-Type", "application/json")
+        self.finish(json.dumps(result))
+
+
+class IdtfHandler(tornado.web.RequestHandler):
+
+    def initialize(self, sys, main, common):
+        self.sys = sys
+        self.main = main
+        self.common = common
+
+    # @tornado.web.asynchronous
+    def get(self, substr):
+        result = {}
+        result['main'] = []
+        result['common'] = []
+        result['sys'] = []
+
+        def appendSorted(array, data):
+            if data not in array:
+                if len(array) > 0:
+                    idx = 0
+                    max_n = 100
+                    inserted = False
+                    for idx in range(len(array)):
+                        if len(array[idx][1]) > len(data[1]):
+                            array.insert(idx, data)
+                            inserted = True
+                            break
+                        idx = idx + 1
+
+                    if not inserted and len(array) < max_n:
+                        array.append(data)
+
+                    if len(array) > max_n:
+                        array.pop()
+                else:
+                    array.append(data)
+
+        for i in self.main:
+            if substr in i[1]:
+                appendSorted(result['main'], i)
+        for i in self.common:
+            if substr in i[1]:
+                appendSorted(result['common'], i)
+        for i in self.sys:
+            if substr in i[1]:
+                appendSorted(result['sys'], i)
+
+        self.set_header("Content-Type", "application/json")
+        self.finish(json.dumps(result))
 
 
 class ContentHandler(tornado.web.RequestHandler):
@@ -71,6 +140,8 @@ class ServerThread(threading.Thread):
 
     self.assets_path = os.path.join(
         getScConfigValue('web', 'path'), 'client/assets')
+    self.rocksdb_fm_path = os.path.join(
+        getScConfigValue('filememory', 'path'), 'file_memory')
     isDebug = bool(getScConfigValue('debug', 'is_debug'))
     self.staticHandler = DebugStaticFileHandler
     if not isDebug:
@@ -81,7 +152,7 @@ class ServerThread(threading.Thread):
     self.module = module
     
   def run(self):
-    
+    global reader
     asyncio.set_event_loop(asyncio.new_event_loop())
     ioloop = tornado.ioloop.IOLoop.instance()
 
@@ -89,6 +160,8 @@ class ServerThread(threading.Thread):
         (r"/ws_json", ScJsonSocketHandler, { 'evt_manager': self.module.events, 'ioloop': ioloop }),
         (r"/content/([0-9]+)", ContentHandler),
         (r'/assets/(.*)', self.staticHandler, {'path': self.assets_path}),
+        (r'/addrs', AddrsHandler, dict(sys=reader.sys, main=reader.main, common=reader.common)),
+        (r'/idtf/(.*)', IdtfHandler, dict(sys=reader.sys, main=reader.main, common=reader.common)),
 
         # should be a last
         (r"/(.*)", MainHandler),
@@ -98,6 +171,9 @@ class ServerThread(threading.Thread):
 
     self.running = True
     self.app.listen(self.port)
+    if reader is None:
+        return
+    reader.read_rocksdb(self.rocksdb_fm_path)
 
     tornado.ioloop.IOLoop.instance().start()
 
@@ -124,7 +200,8 @@ class HttpModule(ScModule):
     Keynodes.Init(__ctx__)
     # TODO: parse port
     port = 8090
-
+    global reader
+    reader = RocksdbReader(self.ctx, self.keynodes)
     self.server = ServerThread(self)
     self.server.start()
 

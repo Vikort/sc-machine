@@ -4,6 +4,7 @@ max_loaded_segments = 1000
 
 [filememory]
 engine = redis
+path = ${SC_MACHINE_ROOT}/../kb.bin
 
 [kpm]
 max_threads = 32
