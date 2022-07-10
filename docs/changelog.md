@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add default python modules paths to python initialization
 - United config file
 
+### Changed
+- Fix gwf2scs-translator. Add opportunity to parse russian identifiers
+
 ## [0.6.1] - 27.04.2022
 ### Added
 - Search by template with params in C++ API
