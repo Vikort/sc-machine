@@ -50,16 +50,10 @@ void finish_question(sc_addr question)
 
 void finish_question_successfully(sc_memory_context * ctx, sc_addr question)
 {
-  sc_addr arc;
-
-  sc_message("TEST");
-
-  arc = sc_memory_arc_new(ctx, sc_type_arc_pos_const_perm, keynode_question_finished_successfully, question);
+  sc_memory_arc_new(ctx, sc_type_arc_pos_const_perm, keynode_question_finished_successfully, question);
 }
 
 void finish_question_unsuccessfully(sc_memory_context * ctx, sc_addr question)
 {
-  sc_addr arc;
-
-  arc = sc_memory_arc_new(ctx, sc_type_arc_pos_const_perm, keynode_question_finished_unsuccessfully, question);
+  sc_memory_arc_new(ctx, sc_type_arc_pos_const_perm, keynode_question_finished_unsuccessfully, question);
 }
