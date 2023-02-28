@@ -36,8 +36,12 @@ TEST_F(ScMemoryTest, erase_elements_success)
 
   sleep(2);
 
-  sc_iterator3 * it = sc_iterator3_f_a_f_new(context, setAddr, 0, testAddr);
+  sc_iterator3 * it = sc_iterator3_f_a_a_new(context, setAddr, 0, 0);
   EXPECT_FALSE(sc_iterator3_next(it));
+
+  it = sc_iterator3_f_a_f_new(context, keynode_question_finished_successfully, sc_type_arc_pos_const_perm, question);
+  EXPECT_TRUE(sc_iterator3_next(it));
+
   sc_iterator3_free(it);
 
   sc_event_destroy(event_erase_elements);
@@ -137,17 +141,13 @@ TEST_F(ScMemoryTest, erase_elements_set_node_erase)
   sc_addr const edgeAddr = sc_memory_arc_new(context, sc_type_arc_pos_const_perm, question, setAddr);
   sc_memory_arc_new(context, sc_type_arc_pos_const_perm, keynode_rrel_1, edgeAddr);
   sc_memory_arc_new(context, sc_type_arc_pos_const_perm, setAddr, testAddr);
-  sc_memory_arc_new(context, sc_type_arc_pos_const_perm, setAddr, setAddr);
 
   sc_memory_arc_new(context, sc_type_arc_pos_const_perm, keynode_question_erase_elements, question);
   sc_memory_arc_new(context, sc_type_arc_pos_const_perm, keynode_question_initiated, question);
 
   sleep(2);
 
-  sc_iterator3 * it = sc_iterator3_f_a_f_new(context, question, 0, setAddr);
-  EXPECT_FALSE(sc_iterator3_next(it));
-
-  it = sc_iterator3_f_a_f_new(context, setAddr, 0, testAddr);
+  sc_iterator3 * it = sc_iterator3_f_a_a_new(context, setAddr, 0, 0);
   EXPECT_FALSE(sc_iterator3_next(it));
   sc_iterator3_free(it);
 
