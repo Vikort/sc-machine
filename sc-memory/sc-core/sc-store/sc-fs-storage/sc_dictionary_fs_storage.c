@@ -21,6 +21,7 @@ sc_char strings_path[MAX_PATH_LENGTH];
 
 sc_dictionary * addrs_hashes_dictionary;
 sc_dictionary * strings_dictionary;
+sc_bool no_read = SC_FALSE;
 
 // ----------------------------------------------
 
@@ -120,7 +121,7 @@ sc_dictionary_node * _sc_dictionary_fs_storage_append_sc_link_unique(sc_char * s
   sc_addr_hash other = sc_addr_to_hash(addr);
 
   sc_link_content * old_content = sc_dictionary_fs_storage_get_sc_link_content(addr);
-  if (old_content != null_ptr && old_content->sc_string != null_ptr && old_content->node != null_ptr)
+  if (sc_string != null_ptr && old_content != null_ptr && old_content->sc_string != null_ptr && old_content->node != null_ptr)
   {
     if (strcmp(old_content->sc_string, sc_string) == 0)
       return old_content->node;
@@ -407,6 +408,7 @@ void sc_fs_storage_write_nodes(void (*callable)(sc_dictionary_node *, void **), 
   dest[0] = strings_dest;
 
   sc_dictionary_visit_down_nodes(strings_dictionary, callable, (void **)dest);
+  no_read = ~no_read;
 
   sc_mem_free(dest);
 }
@@ -420,6 +422,13 @@ void sc_fs_storage_write_node(sc_dictionary_node * node, void ** dest)
 
   if (content->node->data_list == null_ptr || content->node->data_list->size == 0)
     return;
+
+  if (no_read ? sc_dc_node_access_lvl_check_read(content->node) : !sc_dc_node_access_lvl_check_read(content->node))
+    return;
+
+  no_read
+    ? sc_dc_node_access_lvl_make_read(content->node)
+    : sc_dc_node_access_lvl_make_no_read(content->node);
 
   sc_addr_hash * hashes = sc_list_to_hashes_array(content->node->data_list);
   sc_uint32 hashes_size = content->node->data_list->size;
