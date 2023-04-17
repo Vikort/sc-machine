@@ -73,7 +73,7 @@ void uiSc2SCnJsonTranslator::runImpl()
   }
   sc_iterator5_free(it5);
 
-  CollectStructureElementsInfo();
+  CollectScStructureElementsInfo();
 
   sc_json results;
   for (auto const & keyword : mKeywordsList)
@@ -87,7 +87,7 @@ void uiSc2SCnJsonTranslator::runImpl()
   mOutputData = results.dump();
 }
 
-void uiSc2SCnJsonTranslator::CollectStructureElementsInfo()
+void uiSc2SCnJsonTranslator::CollectScStructureElementsInfo()
 {
   // now we need to iterate all arcs and collect output/input arcs info
   // first collect information about elements
@@ -131,7 +131,7 @@ void uiSc2SCnJsonTranslator::CollectStructureElementsInfo()
   }
 
   // find structures elements
-  ScStructureElementInfo::StructureElementInfoList::const_iterator structureElementIt;
+  ScStructureElementInfo::ScStructureElementInfoList::const_iterator structureElementIt;
   ScStructureElementInfo * elInfo;
   for (auto const & keyword : mKeywordsList)
   {
@@ -139,7 +139,7 @@ void uiSc2SCnJsonTranslator::CollectStructureElementsInfo()
     if (elInfo->type & sc_type_node_struct)
     {
       // get the key elements of the structure
-      ScStructureElementInfo::StructureElementInfoList keynodes;
+      ScStructureElementInfo::ScStructureElementInfoList keynodes;
       std::for_each(elInfo->outputArcs.cbegin(), elInfo->outputArcs.cend(), [&keynodes](ScStructureElementInfo * arc) {
         if (std::find_if(arc->inputArcs.cbegin(), arc->inputArcs.cend(), [](ScStructureElementInfo * modifierArc) {
               return modifierArc->sourceInfo->addr == keynode_rrel_key_sc_element;
@@ -152,7 +152,7 @@ void uiSc2SCnJsonTranslator::CollectStructureElementsInfo()
       if (keynodes.empty())
         continue;
 
-      ScStructureElementInfo::StructureElementInfoList removableArcs;
+      ScStructureElementInfo::ScStructureElementInfoList removableArcs;
       for (auto const & elInfoOutputArc : elInfo->outputArcs)
       {
         // find structure elements by arc_pos_const_perm without modifiers
@@ -198,10 +198,10 @@ ScStructureElementInfo * uiSc2SCnJsonTranslator::ResolveStructureElementInfo(sc_
 }
 
 ScStructureElementInfo * uiSc2SCnJsonTranslator::FindStructureKeyword(
-    ScStructureElementInfo::StructureElementInfoList const & structureElements)
+    ScStructureElementInfo::ScStructureElementInfoList const & structureElements)
 {
-  ScStructureElementInfo::StructureElementInfoList structures;
-  ScStructureElementInfo::StructureElementInfoList elements = structureElements;
+  ScStructureElementInfo::ScStructureElementInfoList structures;
+  ScStructureElementInfo::ScStructureElementInfoList elements = structureElements;
   // first try to find structures in key elements
   std::for_each(structureElements.cbegin(), structureElements.cend(), [&structures](ScStructureElementInfo * el) {
     if (el->type & sc_type_node_struct)
@@ -223,8 +223,8 @@ ScStructureElementInfo * uiSc2SCnJsonTranslator::FindStructureKeyword(
 
 void uiSc2SCnJsonTranslator::ParseScnJsonArc(ScStructureElementInfo * elInfo, sc_json & result)
 {
-  GetElementInfo(elInfo->sourceInfo, result[ScnTranslatorConstants::SOURCE_NODE.data()]);
-  GetElementInfo(elInfo->targetInfo, result[ScnTranslatorConstants::TARGET_NODE.data()]);
+  ParseScElementInfo(elInfo->sourceInfo, result[ScnTranslatorConstants::SOURCE_NODE.data()]);
+  ParseScElementInfo(elInfo->targetInfo, result[ScnTranslatorConstants::TARGET_NODE.data()]);
 }
 
 void uiSc2SCnJsonTranslator::ParseScnJsonLink(ScStructureElementInfo * elInfo, sc_json & result)
@@ -276,7 +276,7 @@ void uiSc2SCnJsonTranslator::ParseScnJsonSentence(
 {
   bool isFullLinkedNodes = true;
 
-  GetElementInfo(elInfo, result);
+  ParseScElementInfo(elInfo, result);
   if (!elInfo->structureElements.empty())
   {
     structureElements = elInfo->structureElements;
@@ -316,7 +316,7 @@ void uiSc2SCnJsonTranslator::ParseChildrenScnJson(ScStructureElementInfo * elInf
 }
 
 void uiSc2SCnJsonTranslator::ParseChildrenScnJsonByDirection(
-    ScStructureElementInfo::StructureElementInfoList const & arcs,
+    ScStructureElementInfo::ScStructureElementInfoList const & arcs,
     String const & direction,
     bool isStruct,
     sc_json & children)
@@ -324,7 +324,7 @@ void uiSc2SCnJsonTranslator::ParseChildrenScnJsonByDirection(
   for (auto const & arc : arcs)
   {
     sc_json child;
-    GetChild(arc, direction, isStruct, child);
+    ParseScnJsonChild(arc, direction, isStruct, child);
     if (child.is_null())
       continue;
 
@@ -401,7 +401,7 @@ void uiSc2SCnJsonTranslator::ParseLinkedNodesScnJson(sc_json & children, int lev
   }
 }
 
-void uiSc2SCnJsonTranslator::GetElementInfo(ScStructureElementInfo * elInfo, sc_json & result)
+void uiSc2SCnJsonTranslator::ParseScElementInfo(ScStructureElementInfo * elInfo, sc_json & result)
 {
   if (!elInfo)
     return;
@@ -421,7 +421,7 @@ void uiSc2SCnJsonTranslator::GetElementInfo(ScStructureElementInfo * elInfo, sc_
 }
 
 void uiSc2SCnJsonTranslator::UpdateChildArcs(
-    ScStructureElementInfo::StructureElementInfoList const & arcs,
+    ScStructureElementInfo::ScStructureElementInfoList const & arcs,
     bool isStruct,
     sc_json & fullChild,
     String const & direction)
@@ -429,7 +429,7 @@ void uiSc2SCnJsonTranslator::UpdateChildArcs(
   for (ScStructureElementInfo * arcInfo : arcs)
   {
     sc_json child;
-    GetChild(arcInfo, direction, isStruct, child);
+    ParseScnJsonChild(arcInfo, direction, isStruct, child);
     if (child.is_null())
       continue;
 
@@ -477,7 +477,7 @@ void uiSc2SCnJsonTranslator::ParseChildrenScnJsonByModifier(
     bool isStruct,
     sc_json & children)
 {
-  ScStructureElementInfo::StructureElementInfoList filtered;
+  ScStructureElementInfo::ScStructureElementInfoList filtered;
   std::for_each(
       elInfo->outputArcs.cbegin(), elInfo->outputArcs.cend(), [modifierAddr, &filtered](ScStructureElementInfo * el) {
         if (std::find_if(
@@ -517,7 +517,7 @@ void uiSc2SCnJsonTranslator::ParseChildrenScnJsonByModifier(
     children.push_back(fullChild);
 }
 
-void uiSc2SCnJsonTranslator::GetChild(
+void uiSc2SCnJsonTranslator::ParseScnJsonChild(
     ScStructureElementInfo * arcInfo,
     String const & direction,
     bool isStruct,
@@ -542,18 +542,18 @@ void uiSc2SCnJsonTranslator::GetChild(
   }
 
   sc_json arc;
-  GetElementInfo(arcInfo, arc);
+  ParseScElementInfo(arcInfo, arc);
   arc[ScnTranslatorConstants::DIRECTION.data()] = direction;
 
-  ScStructureElementInfo::StructureElementInfoList modifiersList = arcInfo->inputArcs;
+  ScStructureElementInfo::ScStructureElementInfoList modifiersList = arcInfo->inputArcs;
 
   auto modifierIt = modifiersList.begin();
   sc_json modifier = sc_json();
   if (modifierIt != modifiersList.end() && !((*modifierIt)->isInTree))
   {
-    GetElementInfo((*modifierIt)->sourceInfo, modifier);
+    ParseScElementInfo((*modifierIt)->sourceInfo, modifier);
     sc_json modifierEl;
-    GetElementInfo(*modifierIt, modifierEl);
+    ParseScElementInfo(*modifierIt, modifierEl);
     modifier[ScnTranslatorConstants::MODIFIER_ARCS.data()].push_back(modifierEl);
     (*modifierIt)->isInTree = true;
   }
@@ -562,7 +562,7 @@ void uiSc2SCnJsonTranslator::GetChild(
   if (!modifier.is_null())
     child[ScnTranslatorConstants::MODIFIERS.data()].push_back(modifier);
   sc_json linkedNodeEl;
-  GetElementInfo(linkedNode, linkedNodeEl);
+  ParseScElementInfo(linkedNode, linkedNodeEl);
   child[ScnTranslatorConstants::LINKED_NODES.data()].push_back(linkedNodeEl);
 }
 

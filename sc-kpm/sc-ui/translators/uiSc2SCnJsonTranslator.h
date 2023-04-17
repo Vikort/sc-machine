@@ -12,16 +12,16 @@
 
 struct ScStructureElementInfo
 {
-  typedef std::unordered_set<ScStructureElementInfo *> StructureElementInfoList;
+  typedef std::unordered_set<ScStructureElementInfo *> ScStructureElementInfoList;
 
   sc_type type;
   sc_addr addr;
   ScStructureElementInfo * sourceInfo;
   ScStructureElementInfo * targetInfo;
   ScStructureElementInfo * structKeyword;
-  StructureElementInfoList outputArcs;
-  StructureElementInfoList inputArcs;
-  StructureElementInfoList structureElements;
+  ScStructureElementInfoList outputArcs;
+  ScStructureElementInfoList inputArcs;
+  ScStructureElementInfoList structureElements;
 
   bool isInTree;
 };
@@ -43,7 +43,7 @@ protected:
   void runImpl() override;
 
   //! Collect information of translated sc-elements and store it
-  void CollectStructureElementsInfo();
+  void CollectScStructureElementsInfo();
 
   //! Generate json for specified element
   void ParseScnJsonSentence(ScStructureElementInfo * elInfo, int level, bool isStruct, sc_json & result);
@@ -59,13 +59,13 @@ protected:
 
   //! Get children by direction for specified arcs list
   void ParseChildrenScnJsonByDirection(
-      ScStructureElementInfo::StructureElementInfoList const & arcs,
+      ScStructureElementInfo::ScStructureElementInfoList const & arcs,
       String const & direction,
       bool isStruct,
       sc_json & children);
 
   //! Get base json information about specified element
-  void GetElementInfo(ScStructureElementInfo * elInfo, sc_json & result);
+  void ParseScElementInfo(ScStructureElementInfo * elInfo, sc_json & result);
 
   //! get full json of linked nodes for specified children
   void ParseLinkedNodesScnJson(sc_json & children, int level = 1, bool isStruct = false);
@@ -74,7 +74,7 @@ protected:
 
   //! Find struct keyword in specified elements list
   static ScStructureElementInfo * FindStructureKeyword(
-      ScStructureElementInfo::StructureElementInfoList const & structureElements);
+      ScStructureElementInfo::ScStructureElementInfoList const & structureElements);
 
   //! Get children for specified modifier
   void ParseChildrenScnJsonByModifier(
@@ -84,13 +84,13 @@ protected:
       sc_json & children);
 
   void UpdateChildArcs(
-      ScStructureElementInfo::StructureElementInfoList const & arcs,
+      ScStructureElementInfo::ScStructureElementInfoList const & arcs,
       bool isStruct,
       sc_json & fullChild,
       String const & direction);
 
   //! Get json of arc
-  void GetChild(ScStructureElementInfo * arcInfo, String const & direction, bool isStruct, sc_json & child);
+  void ParseScnJsonChild(ScStructureElementInfo * arcInfo, String const & direction, bool isStruct, sc_json & child);
 
   //! Resolve additional filter elements for specified cmd_addr
   void ResolveFilterList(sc_addr);
@@ -115,7 +115,7 @@ private:
   typedef std::map<sc_addr, ScStructureElementInfo *> tScElemetsInfoMap;
   tScElemetsInfoMap mStructureElementsInfo;
   //! Store structure elements if keyword is struct to remove them from keyword childrens
-  ScStructureElementInfo::StructureElementInfoList structureElements;
+  ScStructureElementInfo::ScStructureElementInfoList structureElements;
   //! Max level of full discripted node
   const int maxLevel = 2;
 };
