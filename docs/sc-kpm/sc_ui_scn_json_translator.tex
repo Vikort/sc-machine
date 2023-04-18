@@ -29,14 +29,14 @@
                     \scnitem{scn-json-модификаторы}
                     \begin{scnindent}
                         \begin{scnrelfromlist}{включение}
-                            \scnitem{scn-json-modifier}
+                            \scnitem{scn-json-модификатор}
                             \begin{scnindent}
                                 \begin{scnrelfromlist}{разбиение}
-                                    \scnitem{scn-json-base-info}
-                                    \scnitem{scn-json-modifier-arcs}
+                                    \scnitem{scn-json-спецификация sc-элементов}
+                                    \scnitem{scn-json-спецификация sc-коннекторов для заданного scn-json-модификатор}
                                     \begin{scnindent}
                                         \begin{scnrelfromlist}{разбиение}
-                                            \scnitem{scn-json-arc}
+                                            \scnitem{scn-json-коннектор}
                                         \end{scnreltolist}
                                     \end{scnindent}
                                 \end{scnreltolist}
@@ -49,7 +49,8 @@
     \end{scnindent}
 \end{scnreltolist}
 
-\scnheader{scn-json-node}
+\scnheader{scn-json-элемент}
+\scnidtf{scn-json-node}
 \begin{scnrelfromlist}{понятия, специфицирующие заданный sc-элемент}
     \scnitem{sc-адрес}
     \scnitem{класс sc-элемента\scnsupergroupsign}
@@ -75,13 +76,14 @@
     \scneqimage[15em]{../images/kpm/struct_example.png}
 \end{scnindent}
 
-\scnheader{scn-json-base-info}
+\scnheader{scn-json-спецификация sc-элементов}
+\scnidtf{scn-json-base-info}
 \scnidtf{Базовая информация элементов scn json}
 \scntext{примечание}{Каждый объект имеет базовую информацию, описывающую sc-адрес, тип и идентификатор элемента}
-\begin{scnrelfromlist}{поля объекта}
-    \scnitem{addr}
-    \scnitem{type}
-    \scnitem{itdf}
+\begin{scnrelfromlist}{понятия, специфицирующие заданный sc-элемент}
+    \scnitem{sc-адрес}
+    \scnitem{класс sc-элемента\scnsupergroupsign}
+    \scnitem{системный идентификатор* $\cup$ основной идентификатор*}
 \end{scnrelfromlist}
 \scnrelfrom{пример}{Пример базовой информации элементов scn json на scn-json-коде}
 \begin{scnindent}
@@ -89,7 +91,8 @@
     \scntext{интерпретация}{Хэш sc-адреса элемента - 145278, тип элемента - 1057, идентификатор элемента - "базовая декомпозиция*"{}}
 \end{scnindent}
 
-\scnheader{scn-json-children}
+\scnheader{scn-json-спецификация sc-элементов, принадлежащих семантической окрестности заданного sc-элемента}
+\scnidtf{scn-json-children}
 \scnidtf{Список связанных с родительским объектом узлов, их дуги и модификаторы}
 \scntext{примечание}{Данный список содержит объекты которые описывают тройки или пятерки при помощи 3-х списков дуг, модификаторов, связанных узловб сгруппированных по модификаторам}
 \scnrelfrom{пример}{Пример списка связанных с родительским объектом узлов, их дуг и модификаторов на scn-json-коде}
@@ -97,19 +100,21 @@
     \scneqimage[15em]{../images/kpm/children_example.png}
 \end{scnindent}
 
-\scnheader{scn-json-arcs}
+\scnheader{scn-json-спецификация инцидентных sc-коннекторов для заданного sc-элемента}
+\scnidtf{scn-json-arcs}
 \scnidtf{Список дуг родительского элемента}
 \scnrelfrom{пример}{Пример списка дуг родительского элемента на scn-json-коде}
 \begin{scnindent}
     \scneqimage[15em]{../images/kpm/arcs_example.png}
 \end{scnindent}
 
-\scnheader{scn-json-arc}
+\scnheader{scn-json-коннектор}
+\scnidtf{scn-json-arc}
 \scnidtf{Дуга родительского элемента}
-\begin{scnrelfromlist}{поля объекта}
-    \scnitem{addr}
-    \scnitem{type}
-    \scnitem{itdf}
+\begin{scnrelfromlist}{понятия, специфицирующие заданный sc-элемент}
+    \scnitem{sc-адрес}
+    \scnitem{класс sc-элемента\scnsupergroupsign}
+    \scnitem{системный идентификатор* $\cup$ основной идентификатор*}
     \scnitem{direction}
 \end{scnrelfromlist}
 \scnrelfrom{пример}{Пример дуги родительского элемента на scn-json-коде}
@@ -117,19 +122,21 @@
     \scneqimage[15em]{../images/kpm/arc_example.png}
 \end{scnindent}
 
-\scnheader{scn-json-modifiers}
+\scnheader{scn-json-модификаторы}
+\scnidtf{scn-json-modifiers}
 \scnidtf{Список модификаторов дуг родительского элемента}
 \scnrelfrom{пример}{Пример списка модификаторов дуг родительского элемента на scn-json-коде}
 \begin{scnindent}
     \scneqimage[15em]{../images/kpm/modifiers_example.png}
 \end{scnindent}
 
-\scnheader{scn-json-modifier}
+\scnheader{scn-json-модификатор}
+\scnidtf{scn-json-modifier}
 \scnidtf{Модификтор дуг родительского элемента}
-\begin{scnrelfromlist}{поля объекта}
-    \scnitem{addr}
-    \scnitem{type}
-    \scnitem{itdf}
+\begin{scnrelfromlist}{понятия, специфицирующие заданный sc-элемент}
+    \scnitem{sc-адрес}
+    \scnitem{класс sc-элемента\scnsupergroupsign}
+    \scnitem{системный идентификатор* $\cup$ основной идентификатор*}
     \scnitem{modifierArcs}
 \end{scnrelfromlist}
 \scnrelfrom{пример}{Пример модификтора дуг родительского элемента на scn-json-коде}
@@ -144,7 +151,8 @@
     \scneqimage[15em]{../images/kpm/modifier_arcs_example.png}
 \end{scnindent}
 
-\scnheader{scn-json-linked-nodes}
+\scnheader{scn-json-спецификация связанных sc-элементов}
+\scnidtf{scn-json-linked-nodes}
 \scnidtf{Список связанных узлов с родительским элементом}
 \scnrelfrom{пример}{Пример списка связанных узлов на scn-json-коде}
 \begin{scnindent}
