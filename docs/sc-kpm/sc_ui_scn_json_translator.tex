@@ -2,40 +2,40 @@
 \scnidtf{scn json}
 \scnidtf{scn (json)}
 \scnidtf{SCn JSON}
-\scnidtf{Метаязык, являющийся подмножеством языка JSON и обеспечивающий внешнее представление и структуризацию \textit{scn-текстов}, используемых ostis-системой в процессе своего функционирования и взаимодействия со внешней средой.}
+\scnidtf{Метаязык внешнего представления \textit{sc.n-текстов}}
 \scniselement{абстрактный язык}
 \scniselement{линейный язык}
 \scnsubset{JSON}
-\begin{scnreltolist}{разбиение}
-    \scnitem{scn-json-node}
+\begin{scnrelfromlist}{разбиение}
+    \scnitem{scn-json-элемент}
     \begin{scnindent}
-        \begin{scnreltolist}{разбиение}
-            \scnitem{scn-json-base-info}
-            \scnitem{scn-json-children}
+        \begin{scnrelfromlist}{разбиение}
+            \scnitem{scn-json-спецификация sc-элементов}
+            \scnitem{scn-json-спецификация sc-элементов, принадлежащих семантической окрестности заданного sc-элемента}
             \begin{scnindent}
-                \begin{scnreltolist}{разбиение}
-                    \scnitem{scn-json-linked-nodes}
+                \begin{scnrelfromlist}{разбиение}
+                    \scnitem{scn-json-спецификация связанных sc-элементов}
                     \begin{scnindent}
-                        \begin{scnreltolist}{разбиение}
-                            \scnitem{scn-json-node}
+                        \begin{scnreltolist}{включение}
+                            \scnitem{scn-json-элемент}
                         \end{scnreltolist}
                     \end{scnindent}
-                    \scnitem{scn-json-arcs}
+                    \scnitem{scn-json-спецификация инцидентных sc-коннекторов для заданного sc-элемента}
                     \begin{scnindent}
-                        \begin{scnreltolist}{разбиение}
-                            \scnitem{scn-json-arc}
+                        \begin{scnreltolist}{включение}
+                            \scnitem{scn-json-коннектор}
                         \end{scnreltolist}
                     \end{scnindent}
-                    \scnitem{scn-json-modifiers}
+                    \scnitem{scn-json-модификаторы}
                     \begin{scnindent}
-                        \begin{scnreltolist}{разбиение}
+                        \begin{scnrelfromlist}{включение}
                             \scnitem{scn-json-modifier}
                             \begin{scnindent}
-                                \begin{scnreltolist}{разбиение}
+                                \begin{scnrelfromlist}{разбиение}
                                     \scnitem{scn-json-base-info}
                                     \scnitem{scn-json-modifier-arcs}
                                     \begin{scnindent}
-                                        \begin{scnreltolist}{разбиение}
+                                        \begin{scnrelfromlist}{разбиение}
                                             \scnitem{scn-json-arc}
                                         \end{scnreltolist}
                                     \end{scnindent}
@@ -50,17 +50,17 @@
 \end{scnreltolist}
 
 \scnheader{scn-json-node}
-\begin{scnrelfromlist}{поля объекта}
-    \scnitem{addr}
-    \scnitem{type}
-    \scnitem{itdf}
-    \scnitem{content}
+\begin{scnrelfromlist}{понятия, специфицирующие заданный sc-элемент}
+    \scnitem{sc-адрес}
+    \scnitem{класс sc-элемента\scnsupergroupsign}
+    \scnitem{системный идентификатор* $\cup$ основной идентификатор*}
+    \scnitem{содержимое файла ostis-системы*}
     \begin{scnindent}
-        \scntext{примечание}{Данное поле доступно если объект описывает sc-ссылку}
+        \scntext{примечание}{Первые компоненты связок этого отношения являются элементами sc-памяти, соответствующие файлам ostis-системы.}
     \end{scnindent}
-    \scnitem{contentType}
+    \scnitem{класс файла ostis-системы\scnsupergroupsign}
     \begin{scnindent}
-        \scntext{примечание}{Данное поле доступно если объект описывает sc-ссылку}
+        \scntext{примечание}{Первые компоненты связок этого отношения являются элементами sc-памяти, соответствующие файлам ostis-системы.}
     \end{scnindent}
     \scnitem{children}
     \scnitem{struct}
@@ -151,16 +151,16 @@
     \scneqimage[15em]{../images/kpm/linked_nodes_example.png}
 \end{scnindent}
 
-\scnheader{Реализация агента трансляции из внутреннего представления знаний в промежуточный транспортный формат scn (json)}
+\scnheader{Реализация sc-агента трансляции конструкций sc-памяти во внешний транспортный язык SCn-JSON-код}
 \begin{scnrelfromlist}{используемый язык программирования}
     \scnitem{C}
     \scnitem{C++}
 \end{scnrelfromlist}
 \scniselement{атомарный sc-агент}
-\begin{scnrelfromlist}{}
+\begin{scnrelfromset}{зависимости компонента}
     \scnitem{Реализация sc-памяти}
 \end{scnrelfromlist}
-\scntext{адрес хранилища}{}
+\scntext{адрес хранилища}
 \scntext{пояснение}{Текущая реализация агента осуществляет транлсяцию из внутреннего представления знаний в формат scn (json), позволяющий отобразить полученную структуру без допольнительных преобразований, в отличии от формата scs (json).}
 \scnrelfrom{пример входной конструкции}{\scnfileimage[15em]{../images/kpm/scn_json_translator_input.png}}
 \scnrelfrom{пример входной конструкции}{\scnfileimage[15em]{../images/kpm/scn_json_translator_input2.png}}
@@ -189,7 +189,7 @@
     \end{scnindent}
 \end{scnrelfromlist}
 
-Для установления порядка отношений и элементов, а также для фильтрации ненужных отношений в отображении для данной ostis-системы, можно задать \textit{множество порядка SCn JSON} и \textit{множество фильтрации SCn JSON}
+Для установления порядка отношений и элементов, а также для фильтрации ненужных отношений в отображении для данной ostis-системы, можно задать \textit{множество порядка SCn-JSON-кода} и \textit{множество фильтрации SCn-JSON-кода}
 \scnheader{множество порядка SCn JSON}
 \scnidtf{Элементы множества порядка SCn JSON}
 \scntext{пояснение}{Элементы множества порядка SCn JSON - это множество элементов, с которых необходимо начинать трансляцию в формате scn (json), в заданном порядке.}
